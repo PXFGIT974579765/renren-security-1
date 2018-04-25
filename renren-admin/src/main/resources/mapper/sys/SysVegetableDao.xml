@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.sys.dao.SysVegetableDao">
+
+	<select id="queryByType" resultType="SysVegetableEntity">
+		select * from sys_vegetable where name = #{type} order by time DESC limit 1000
+	</select>
+
+    <select id="queryByNameTime" resultType="SysVegetableEntity">
+		select * from sys_vegetable where name = #{arg0} 
+		and time &lt; #{arg2} and time > #{arg1}
+		order by time ASC;
+	</select>
+	<select id="queryByCondition" resultType="SysVegetableEntity">
+		select * from sys_vegetable where name = #{arg0} 
+		and time &lt; #{arg2} and time > #{arg1}
+		<if test="arg3!= null and arg3 !='' ">
+				and area = #{arg3}
+		</if>
+		order by time ASC;
+	</select>
+	
+	<select id = "getItem" resultType="String">
+	 SELECT distinct(name) FROM sys_vegetable;
+	</select>
+</mapper>

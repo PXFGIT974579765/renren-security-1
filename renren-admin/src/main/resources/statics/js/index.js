@@ -87,14 +87,14 @@ var vm = new Vue({
 			});
 		},
         donate: function () {
-            layer.open({
+           /* layer.open({
                 type: 2,
                 title: false,
                 area: ['806px', '467px'],
                 closeBtn: 1,
                 shadeClose: false,
                 content: ['http://cdn.renren.io/donate.jpg', 'no']
-            });
+            });*/
         }
 	},
 	created: function(){
