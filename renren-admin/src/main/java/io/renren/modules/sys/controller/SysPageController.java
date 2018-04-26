@@ -37,6 +37,13 @@ public class SysPageController {
 		return "sucai-dapin";
 	}
 	
+	@SysLog("调用系统汇总大屏页面")
+	@RequestMapping("mainscreen")
+	public String mainscreen(Model model){
+		
+		return "mainscreen";
+	}
+	
 	@RequestMapping("gongzuozhan")
 	public String gongzuozhan(){
 		return "gongzuozhan";

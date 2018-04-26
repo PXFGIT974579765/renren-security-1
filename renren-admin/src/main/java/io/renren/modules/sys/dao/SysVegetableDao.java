@@ -46,4 +46,30 @@ public interface SysVegetableDao extends BaseMapper<SysVegetableEntity>{
 	 * @return
 	 */
 	List<String> getItem();
+	
+	/**
+	 * 获取蔬菜信息来源区域数目
+	 * @return
+	 */
+	List<String> getAreas();
+	
+	/**
+	 * 获取某蔬菜往前多少天数据
+	 * @param days 往前多少天
+	 * @param name 蔬菜种类
+	 * @param area 蔬菜信息来源区域
+	 * @return
+	 */
+	List<SysVegetableEntity> getTendency(Integer days,String name, String area);
+	
+	
+	
+	/**
+	 * 获取某蔬菜往前多少天的价格数据（包含历史的最高最低价格）
+	 * @param days 往前多少天
+	 * @param name 蔬菜种类
+	 * @param area 蔬菜信息来源区域
+	 * @return
+	 */
+	List<SysVegetableEntity> getPriceTendency(Integer days,String name, String area);
 }

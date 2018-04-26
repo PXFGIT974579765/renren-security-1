@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+
+<#include "/header.html">
+<link rel="stylesheet"
+	href="${request.contextPath}/statics/css/gongzuozhan_style.css">
+</head>
+<body style="height: 100%; margin: 0">
+    <div class="row" style="height: 100%; margin: 0">
+	<div class="col-md-6" id="container" style="height: 100%; margin-bottom:20px"></div>
+	<div class="col-md-6" id="container2" style="height: 50%;margin-bottom:20px"></div>
+	<div class="col-md-6 right" id="container3" style="height: 50%; margin-bottom:20px"></div>
+	</div>
+	<script
+		src="${request.contextPath}/statics/js/modules/echart/echarts-gl.js"></script>
+	<script
+		src="${request.contextPath}/statics/js/modules/echart/echarts.js"></script>
+	<script src="${request.contextPath}/statics/libs/daterangepicker.js"></script>
+	<script src="${request.contextPath}/statics/libs/moment.js"></script>
+
+
+	<script type="text/javascript">
+		var dom = document.getElementById("container");
+		var myChart = echarts.init(dom);
+		var app = {};
+		option = null;
+		var labelRight = {
+			normal : {
+				position : 'right'
+			}
+		};
+		option = {
+			title : {
+				text : '近期蔬菜波动趋势',
+				
+				
+			},
+			tooltip : {
+				trigger : 'axis',
+				axisPointer : { // 坐标轴指示器，坐标轴触发有效
+					type : 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+				}
+			},
+			grid : {
+				top : 80,
+				bottom : 30
+			},
+			xAxis : {
+				type : 'value',
+				position : 'top',
+				splitLine : {
+					lineStyle : {
+						type : 'dashed'
+					}
+				},
+			},
+			yAxis : {
+				type : 'category',
+				axisLine : {
+					show : false
+				},
+				axisLabel : {
+					show : false
+				},
+				axisTick : {
+					show : false
+				},
+				splitLine : {
+					show : false
+				},
+				data : [ 'ten', 'nine', 'eight', 'seven', 'six', 'five',
+						'four', 'three', 'two', 'one' ]
+			},
+			series : [ {
+				name : '生活费',
+				type : 'bar',
+				stack : '总量',
+				label : {
+					normal : {
+						show : true,
+						formatter : '{b}'
+					}
+				},
+				data : [ {
+					value : -0.07,
+					label : labelRight
+				}, {
+					value : -0.09,
+					label : labelRight
+				}, 0.2, 0.44, {
+					value : -0.23,
+					label : labelRight
+				}, 0.08, {
+					value : -0.17,
+					label : labelRight
+				}, 0.47, {
+					value : -0.36,
+					label : labelRight
+				}, 0.18 ]
+			} ]
+		};
+		;
+		if (option && typeof option === "object") {
+			myChart.setOption(option, true);
+		}
+	</script>
+
+	<script type="text/javascript">
+		var dom = document.getElementById("container2");
+		var myChart = echarts.init(dom);
+		var app = {};
+		option = null;
+		option = {
+			title : {
+				text : '近期最高价上涨趋势\n最大的五种蔬菜'
+			},
+			tooltip : {
+				trigger : 'axis'
+			},
+			legend : {
+				data : [ '邮件营销', '联盟广告', '视频广告', '直接访问', '搜索引擎' ]
+			},
+			grid : {
+				left : '3%',
+				right : '4%',
+				bottom : '3%',
+				containLabel : true
+			},
+			toolbox : {
+				feature : {
+					saveAsImage : {}
+				}
+			},
+			xAxis : {
+				type : 'category',
+				boundaryGap : false,
+				data : [ '周一', '周二', '周三', '周四', '周五', '周六', '周日' ]
+			},
+			yAxis : {
+				type : 'value'
+			},
+			series : [ {
+				name : '邮件营销',
+				type : 'line',
+				stack : '总量',
+				data : [ 120, 132, 101, 134, 90, 230, 210 ]
+			}, {
+				name : '联盟广告',
+				type : 'line',
+				stack : '总量',
+				data : [ 220, 182, 191, 234, 290, 330, 310 ]
+			}, {
+				name : '视频广告',
+				type : 'line',
+				stack : '总量',
+				data : [ 150, 232, 201, 154, 190, 330, 410 ]
+			}, {
+				name : '直接访问',
+				type : 'line',
+				stack : '总量',
+				data : [ 320, 332, 301, 334, 390, 330, 320 ]
+			}, {
+				name : '搜索引擎',
+				type : 'line',
+				stack : '总量',
+				data : [ 820, 932, 901, 934, 1290, 1330, 1320 ]
+			} ]
+		};
+		;
+		if (option && typeof option === "object") {
+			myChart.setOption(option, true);
+		}
+		</script>
+		
+		<script type="text/javascript">
+		var dom = document.getElementById("container3");
+		var myChart = echarts.init(dom);
+		var app = {};
+		option = null;
+		option = {
+			title : {
+				text : '近期最低价下降趋势\n最大的五种蔬菜'
+			},
+			tooltip : {
+				trigger : 'axis'
+			},
+			legend : {
+				data : [ '邮件营销', '联盟广告', '视频广告', '直接访问', '搜索引擎' ]
+			},
+			grid : {
+				left : '3%',
+				right : '4%',
+				bottom : '3%',
+				containLabel : true
+			},
+			toolbox : {
+				feature : {
+					saveAsImage : {}
+				}
+			},
+			xAxis : {
+				type : 'category',
+				boundaryGap : false,
+				data : [ '周一', '周二', '周三', '周四', '周五', '周六', '周日' ]
+			},
+			yAxis : {
+				type : 'value'
+			},
+			series : [ {
+				name : '邮件营销',
+				type : 'line',
+				stack : '总量',
+				data : [ 120, 132, 101, 134, 90, 230, 210 ]
+			}, {
+				name : '联盟广告',
+				type : 'line',
+				stack : '总量',
+				data : [ 220, 182, 191, 234, 290, 330, 310 ]
+			}, {
+				name : '视频广告',
+				type : 'line',
+				stack : '总量',
+				data : [ 150, 232, 201, 154, 190, 330, 410 ]
+			}, {
+				name : '直接访问',
+				type : 'line',
+				stack : '总量',
+				data : [ 320, 332, 301, 334, 390, 330, 320 ]
+			}, {
+				name : '搜索引擎',
+				type : 'line',
+				stack : '总量',
+				data : [ 820, 932, 901, 934, 1290, 1330, 1320 ]
+			} ]
+		};
+		;
+		if (option && typeof option === "object") {
+			myChart.setOption(option, true);
+		}
+		</script>
+		</body>
+		</html>
+	

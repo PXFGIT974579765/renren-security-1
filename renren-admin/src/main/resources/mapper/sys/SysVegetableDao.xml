@@ -4,24 +4,58 @@
 <mapper namespace="io.renren.modules.sys.dao.SysVegetableDao">
 
 	<select id="queryByType" resultType="SysVegetableEntity">
-		select * from sys_vegetable where name = #{type} order by time DESC limit 1000
+		select * from sys_vegetable
+		where name = #{type} order by time DESC limit 1000
 	</select>
 
-    <select id="queryByNameTime" resultType="SysVegetableEntity">
-		select * from sys_vegetable where name = #{arg0} 
+	<select id="queryByNameTime" resultType="SysVegetableEntity">
+		select * from
+		sys_vegetable where name = #{arg0}
 		and time &lt; #{arg2} and time > #{arg1}
 		order by time ASC;
 	</select>
 	<select id="queryByCondition" resultType="SysVegetableEntity">
-		select * from sys_vegetable where name = #{arg0} 
+		select * from sys_vegetable where name = #{arg0}
 		and time &lt; #{arg2} and time > #{arg1}
 		<if test="arg3!= null and arg3 !='' ">
-				and area = #{arg3}
+			and area = #{arg3}
 		</if>
 		order by time ASC;
 	</select>
+
+	<select id="getItem" resultType="String">
+		SELECT distinct(name) FROM sys_vegetable;
+	</select>
+	<select id="getAreas" resultType="String">
+		SELECT distinct(area) FROM sys_vegetable;
+	</select>
+
+	<select id="getTendency" resultType="SysVegetableEntity">
+		SELECT * FROM vegetablebigdata.sys_vegetable
+		where time >= date_sub(curdate(),interval #{arg0} day)
+		and time &lt;= curdate() 
+		<if test="arg1!= null and arg1 !='' ">
+			and name = #{arg1}
+		</if>
+		<if test="arg2!= null and arg2 !='' ">
+			and area = #{arg2}
+		</if>
+
+	</select>
 	
-	<select id = "getItem" resultType="String">
-	 SELECT distinct(name) FROM sys_vegetable;
+	<select id="getPriceTendency" resultType="SysVegetableEntity">
+		SELECT name,area,max(h_price) as max_h_price,min(h_price) as min_h_price,
+       max(l_price) as max_l_price, min(l_price) as min_l_price,
+       max(ave_price) as max_ave_price, min(ave_price) as min_ave_price
+        FROM vegetablebigdata.sys_vegetable
+		where time >= date_sub(curdate(),interval #{arg0} day)
+		and time &lt;= curdate() 
+		<if test="arg1!= null and arg1 !='' ">
+			and name = #{arg1}
+		</if>
+		<if test="arg2!= null and arg2 !='' ">
+			and area = #{arg2}
+		</if>
+
 	</select>
 </mapper>

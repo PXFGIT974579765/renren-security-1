@@ -1015,7 +1015,18 @@ paths:
         '200':
           schema:
             $ref: '#/definitions/R'
-
+sys/vegetable/tendencypricelist:
+    get:
+      tags:
+        - 蔬菜态势感知
+      summary: 蔬菜信息
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: 返回当前管理员信息
+          schema:
+            $ref: '#/definitions/SysUserEntity'
 #定义数据模型
 definitions:
   R:

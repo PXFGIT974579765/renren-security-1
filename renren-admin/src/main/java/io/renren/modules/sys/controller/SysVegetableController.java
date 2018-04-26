@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,29 @@ public class SysVegetableController extends AbstractController{
 		return veList;
 	}
 	
+	/**
+	 * 按种类查询蔬菜趋势
+	 */
+	@SysLog("按种类查询蔬菜趋势")
+	@RequestMapping("/tendency")
+	public List<SysVegetableEntity> tendency(@RequestParam String name,Integer days, String area){
+
+		List<SysVegetableEntity> veList = sysVegetableService.getTendency(days, name, area);
+
+		return veList;
+	}
+	
+	/**
+	 * 按种类查询蔬菜价格趋势（包含历史最高最低价格）
+	 */
+	@SysLog("按种类查询蔬菜价格趋势（包含历史最高最低价格）")
+	@RequestMapping("/pricetendency")
+	public List<SysVegetableEntity> pricetendency(@RequestParam String name,Integer days, String area){
+
+		List<SysVegetableEntity> veList = sysVegetableService.getPriceTendency(days, name, area);
+
+		return veList;
+	}
 	/**
 	 * 所有蔬菜列表
 	 */
@@ -98,6 +122,86 @@ public class SysVegetableController extends AbstractController{
 	public List<String> itemList(){
 		List <String> items = sysVegetableService.getItem();
 		return items;
+	}
+	
+	/**
+	 * 所有蔬菜数据来源
+	 */
+	@SysLog("获取蔬菜数据来源地列表")
+	@RequestMapping("/arealist")
+	public List<String> areaList(){
+		List <String> items = sysVegetableService.getAreas();
+		return items;
+	}
+	
+
+	/**
+	 * 所有蔬菜趋势排名
+	 */
+	@SysLog("获取所有蔬菜趋势排名")
+	@RequestMapping("/tendencylist")
+	public Map<String,Double> tendencylist(Integer days){
+		Map<String,Double> items = sysVegetableService.getVegetableTotalTendency(days, null);
+		System.out.println(items.values());
+		return items;
+	}
+	
+	
+	/**
+	 * 所有蔬菜平均价格趋势排名（采用线性拟合）
+	 */
+	@SysLog("获取所有蔬菜平均价格趋势排名（采用线性拟合）")
+	@RequestMapping("/tendencyavepricelist")
+	public Map<String,SysVegetableEntity> tendencyavepricelist(Integer days,String area){
+		Map<String,Double> items = sysVegetableService.getVegetableTotalPriceTendency(days, null,"aveprice");
+		Map<String, SysVegetableEntity> veMap = new LinkedHashMap<>();
+        for (Map.Entry<String, Double> entry : items.entrySet()) {  
+        	   String key = entry.getKey().toString();  
+        	   String value = entry.getValue().toString();  
+        	   System.out.println("key=" + key + " value=" + value);  
+        	   SysVegetableEntity ve = sysVegetableService.getTendency(days, entry.getKey(), area).get(0);
+        	   ve.setTendency(entry.getValue());
+        	   veMap.put(entry.getKey(), ve);
+        	  }
+		return veMap;
+	}
+	
+	/**
+	 * 所有蔬菜最高价格趋势排名（采用线性拟合）
+	 */
+	@SysLog("获取所有蔬菜最高价格趋势排名（采用线性拟合）")
+	@RequestMapping("/tendencyhpricelist")
+	public Map<String,SysVegetableEntity> tendencyhpricelist(Integer days,String area){
+		Map<String,Double> items = sysVegetableService.getVegetableTopFiveHPriecTendency(days, null);
+        Map<String, SysVegetableEntity> veMap = new LinkedHashMap<>();
+        for (Map.Entry<String, Double> entry : items.entrySet()) {  
+        	   String key = entry.getKey().toString();  
+        	   String value = entry.getValue().toString();  
+        	   System.out.println("key=" + key + " value=" + value);  
+        	   SysVegetableEntity ve = sysVegetableService.getTendency(days, entry.getKey(), area).get(0);
+        	   ve.setTendency(entry.getValue());
+        	   veMap.put(entry.getKey(), ve);
+        	  }
+		return veMap;
+	}
+	
+	/**
+	 * 所有蔬菜最低价格趋势排名（采用线性拟合）
+	 */
+	@SysLog("获取所有蔬菜最低价格趋势排名（采用线性拟合）")
+	@RequestMapping("/tendencylpricelist")
+	public Map<String,SysVegetableEntity> tendencylpricelist(Integer days,String area){
+		Map<String,Double> items = sysVegetableService.getVegetableTopFiveLPriecTendency(days, null);
+		Map<String, SysVegetableEntity> veMap = new LinkedHashMap<>();
+        for (Map.Entry<String, Double> entry : items.entrySet()) {  
+        	   String key = entry.getKey().toString();  
+        	   String value = entry.getValue().toString();  
+        	   System.out.println("key=" + key + " value=" + value);  
+        	   SysVegetableEntity ve = sysVegetableService.getTendency(days, entry.getKey(), area).get(0);
+        	   ve.setTendency(entry.getValue());
+        	   veMap.put(entry.getKey(), ve);
+        	  }
+		return veMap;
 	}
 	
 	/**
