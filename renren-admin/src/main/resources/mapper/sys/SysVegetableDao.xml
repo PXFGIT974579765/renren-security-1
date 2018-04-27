@@ -40,7 +40,8 @@
 		<if test="arg2!= null and arg2 !='' ">
 			and area = #{arg2}
 		</if>
-
+        and not isnull(h_price) and not isnull(l_price)
+        order by time ASC;
 	</select>
 	
 	<select id="getPriceTendency" resultType="SysVegetableEntity">
@@ -56,6 +57,7 @@
 		<if test="arg2!= null and arg2 !='' ">
 			and area = #{arg2}
 		</if>
-
+        and not isnull(h_price) and not isnull(l_price)
+        order by time ASC;
 	</select>
 </mapper>
