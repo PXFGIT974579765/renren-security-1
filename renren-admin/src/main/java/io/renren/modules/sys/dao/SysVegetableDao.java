@@ -2,9 +2,12 @@ package io.renren.modules.sys.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 
 import io.renren.modules.sys.entity.SysVegetableEntity;
+
 
 /**
  * 蔬菜实体
@@ -29,7 +32,7 @@ public interface SysVegetableDao extends BaseMapper<SysVegetableEntity>{
 	 * @param endTime
 	 * @return
 	 */
-	List<SysVegetableEntity> queryByNameTime(String name, String beginTime, String endTime);
+	List<SysVegetableEntity> queryByNameTime(@Param("name") String name,@Param("beginTime") String beginTime,@Param("endTime") String endTime);
 	
 	/**
 	 * 根据条件查询
@@ -39,7 +42,7 @@ public interface SysVegetableDao extends BaseMapper<SysVegetableEntity>{
 	 * @param area
 	 * @return
 	 */
-	List<SysVegetableEntity> queryByCondition(String name, String beginTime, String endTime, String area);
+	List<SysVegetableEntity> queryByCondition(@Param("name") String name,@Param("beginTime") String beginTime,@Param("endTime")  String endTime,@Param("area")  String area);
 	
 	/**
 	 * 获取蔬菜种类数目
@@ -60,7 +63,7 @@ public interface SysVegetableDao extends BaseMapper<SysVegetableEntity>{
 	 * @param area 蔬菜信息来源区域
 	 * @return
 	 */
-	List<SysVegetableEntity> getTendency(Integer days,String name, String area);
+	List<SysVegetableEntity> getTendency(@Param("days") Integer days,@Param("name") String name,@Param("area") String area);
 	
 	
 	
@@ -71,5 +74,5 @@ public interface SysVegetableDao extends BaseMapper<SysVegetableEntity>{
 	 * @param area 蔬菜信息来源区域
 	 * @return
 	 */
-	List<SysVegetableEntity> getPriceTendency(Integer days,String name, String area);
+	List<SysVegetableEntity> getPriceTendency(@Param("days") Integer days,@Param("name") String name,@Param("area") String area);
 }
