@@ -32,15 +32,17 @@ public class SysPageController {
 	
 	@SysLog("调用系统大屏页面")
 	@RequestMapping("sucai-dapin")
-	public String dapin(Model model,String name){
+	public String dapin(Model model,String name,String area){
 		model.addAttribute("name", name);
+		model.addAttribute("area", area);
 		return "sucai-dapin";
 	}
 	
 	@SysLog("调用系统汇总大屏页面")
 	@RequestMapping("mainscreen")
-	public String mainscreen(Model model){
-		
+	public String mainscreen(Model model,Integer days, String area){
+		model.addAttribute("days", days);
+		model.addAttribute("area", area);
 		return "mainscreen";
 	}
 	

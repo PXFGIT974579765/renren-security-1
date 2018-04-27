@@ -52,9 +52,9 @@ public class SysVegetableServiceImpl extends ServiceImpl<SysVegetableDao, SysVeg
 	}
 
 	@Override
-	public List<String> getItem() {
+	public List<String> getItem(String area) {
 		
-		return baseMapper.getItem();
+		return baseMapper.getItem(area);
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class SysVegetableServiceImpl extends ServiceImpl<SysVegetableDao, SysVeg
 
 	@Override
 	public Map<String, Double> getVegetableTotalTendency(Integer days,String area) {
-		List<String> itemList = this.getItem();
+		List<String> itemList = this.getItem(area);
 		
 		Map<String, Double> map = new HashMap<String, Double>( );
 		for (String item : itemList) {
@@ -107,7 +107,7 @@ public class SysVegetableServiceImpl extends ServiceImpl<SysVegetableDao, SysVeg
 
 	@Override
 	public Map<String, Double> getVegetableTotalPriceTendency(Integer days, String area,String priceType) {
-        List<String> itemList = this.getItem();
+        List<String> itemList = this.getItem(area);
         RegressionLine line = new RegressionLine();
 		Map<String, Double> map = new HashMap<String, Double>( );
 		for (String item : itemList) {

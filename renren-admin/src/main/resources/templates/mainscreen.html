@@ -12,14 +12,16 @@
 	<div class="col-md-6" id="container1" style="height: 50%;"></div>
 	<div class="col-md-6" id="container2" style="height: 50%;"></div>
 	</div>
-	
+	<input type=hidden id="webarea" name="webarea" value="${area}"/>
+	<input type=hidden id="webdays" name="webdays" value="${days}"/>
 	<script
 		src="${request.contextPath}/statics/js/modules/echart/echarts.js"></script>
 	<script src="${request.contextPath}/statics/libs/daterangepicker.js"></script>
 	<script src="${request.contextPath}/statics/libs/moment.js"></script>
 <!-- 生成日期数组作为坐标X轴 -->
 <script>
-var days=60;
+var days = $("#webdays").val();
+var area = $("#webarea").val();
 var now = new Date(); // 这个算法能自动处理闰年和非闰年。2012年是闰年，所以2月有29号
 var stime = [];
 var i = 0;
@@ -42,7 +44,6 @@ function fillZero(s){
 <!-- 正负交叉图 -->
 	<script type="text/javascript">
 	    
-	    var area="";
 		var dom = document.getElementById("container");
 		var myChart = echarts.init(dom);
 		var app = {};

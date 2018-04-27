@@ -48,7 +48,7 @@ public interface SysVegetableDao extends BaseMapper<SysVegetableEntity>{
 	 * 获取蔬菜种类数目
 	 * @return
 	 */
-	List<String> getItem();
+	List<String> getItem(@Param("area") String area);
 	
 	/**
 	 * 获取蔬菜信息来源区域数目

@@ -24,7 +24,10 @@
 	</select>
 
 	<select id="getItem" resultType="String">
-		SELECT distinct(name) FROM sys_vegetable;
+		SELECT distinct(name) FROM sys_vegetable 
+		<if test="area != null and area !='' ">
+		where area=#{area};
+		</if>
 	</select>
 	<select id="getAreas" resultType="String">
 		SELECT distinct(area) FROM sys_vegetable;

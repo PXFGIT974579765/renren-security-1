@@ -122,8 +122,8 @@ public class SysVegetableController extends AbstractController {
 	 */
 	@SysLog("获取蔬菜种类列表")
 	@RequestMapping("/itemlist")
-	public List<String> itemList() {
-		List<String> items = sysVegetableService.getItem();
+	public List<String> itemList(String area) {
+		List<String> items = sysVegetableService.getItem(area);
 		return items;
 	}
 
@@ -166,7 +166,7 @@ public class SysVegetableController extends AbstractController {
 	@SysLog("获取所有蔬菜平均价格趋势排名（采用线性拟合）")
 	@RequestMapping("/tendencyavepricelist")
 	public List<SysVegetableEntity> tendencyavepricelist(Integer days, String area) {
-		Map<String, Double> items = sysVegetableService.getVegetableTotalPriceTendency(days, null, "aveprice");
+		Map<String, Double> items = sysVegetableService.getVegetableTotalPriceTendency(days, area, "aveprice");
 		List<SysVegetableEntity> ves = new LinkedList<>();
 		for (Map.Entry<String, Double> entry : items.entrySet()) {
 			String key = entry.getKey().toString();
@@ -189,7 +189,7 @@ public class SysVegetableController extends AbstractController {
 	@SysLog("获取所有蔬菜最高价格趋势排名（采用线性拟合）")
 	@RequestMapping("/tendencyhpricelist")
 	public List<List<SysVegetableEntity>> tendencyhpricelist(Integer days, String area) {
-		Map<String, Double> items = sysVegetableService.getVegetableTopFiveHPriecTendency(days, null);
+		Map<String, Double> items = sysVegetableService.getVegetableTopFiveHPriecTendency(days, area);
 
 		List<List<SysVegetableEntity>> ves = new LinkedList<>();
 		for (Map.Entry<String, Double> entry : items.entrySet()) {
@@ -214,7 +214,7 @@ public class SysVegetableController extends AbstractController {
 	@SysLog("获取所有蔬菜最低价格趋势排名（采用线性拟合）")
 	@RequestMapping("/tendencylpricelist")
 	public List<List<SysVegetableEntity>>  tendencylpricelist(Integer days, String area) {
-		Map<String, Double> items = sysVegetableService.getVegetableTopFiveLPriecTendency(days, null);
+		Map<String, Double> items = sysVegetableService.getVegetableTopFiveLPriecTendency(days, area);
 		List<List<SysVegetableEntity>> ves = new LinkedList<>();
 		for (Map.Entry<String, Double> entry : items.entrySet()) {
 			String key = entry.getKey().toString();
