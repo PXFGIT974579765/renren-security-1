@@ -56,7 +56,10 @@ public class SysPageController {
 	public String login(){
 		return "login";
 	}
-
+	@RequestMapping("login2.html")
+	public String login2(){
+		return "login2";
+	}
 	@RequestMapping("main.html")
 	public String main(){
 		return "main";
