@@ -30,6 +30,7 @@ public interface SysVegetableService extends IService<SysVegetableEntity>{
 	List<SysVegetableEntity> queryByNameTime(String name, String beginTime, String endTime);
 	
 	List<SysVegetableEntity> queryByCondition(Map<String,Object> map);
+	List<SysVegetableEntity> queryByArea(String area);
 	
 	List<SysVegetableEntity> queryByCondition(String name, String beginTime, String endTime, String area);
 
