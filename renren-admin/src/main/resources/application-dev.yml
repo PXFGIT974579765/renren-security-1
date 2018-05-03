@@ -11,6 +11,7 @@ spring:
              #   url: jdbc:mysql://172.10.10.167:3306/vegetablebigdata?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
               #  username: cetc
                # password: cetc2018
+
             second:  #数据源2
                 url: jdbc:mysql://139.224.118.191:3306/vegetableBigData?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
                 username: renren

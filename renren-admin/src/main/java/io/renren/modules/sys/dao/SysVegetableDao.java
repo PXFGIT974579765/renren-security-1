@@ -45,6 +45,22 @@ public interface SysVegetableDao extends BaseMapper<SysVegetableEntity>{
 	List<SysVegetableEntity> queryByCondition(@Param("name") String name,@Param("beginTime") String beginTime,@Param("endTime")  String endTime,@Param("area")  String area);
 	
 	/**
+	 * 按区域查询最新时间所有蔬菜数据
+	 * @param area
+	 * @return
+	 */
+	List<SysVegetableEntity> queryByArea(@Param("area") String area);
+	
+	/**
+	 * 按照区域和时间查询
+	 * @param beginTime
+	 * @param endTime
+	 * @param area
+	 * @return
+	 */
+	List<SysVegetableEntity> queryByAreaTime(@Param("beginTime") String beginTime,@Param("endTime")  String endTime,@Param("area")  String area);
+
+	/**
 	 * 获取蔬菜种类数目
 	 * @return
 	 */

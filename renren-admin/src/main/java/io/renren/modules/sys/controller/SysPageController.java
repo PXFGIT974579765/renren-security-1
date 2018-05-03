@@ -38,6 +38,14 @@ public class SysPageController {
 		return "sucai-dapin";
 	}
 	
+	@SysLog("调用系统大屏页面p")
+	@RequestMapping("sucai-dapin-p")
+	public String dapin2(Model model,String name,String area){
+		model.addAttribute("name", name);
+		model.addAttribute("area", area);
+		return "sucai-dapin-p";
+	}
+	
 	@SysLog("调用系统汇总大屏页面")
 	@RequestMapping("mainscreen")
 	public String mainscreen(Model model,Integer days, String area){

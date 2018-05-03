@@ -116,6 +116,18 @@ public class SysVegetableController extends AbstractController {
 
 		return veList;
 	}
+	
+	/**
+	 * 按区域查询最新时间所有蔬菜数据
+	 * pxf 2018/05/02  13:18
+	 */
+	@SysLog("按区域查询最新时间所有蔬菜数据")
+	@RequestMapping("/listbyarea")
+	public List<SysVegetableEntity> listByArea(@RequestParam String area) {
+		System.out.println("area ::  " + area);
+		List<SysVegetableEntity> veList = sysVegetableService.queryByArea(area);
+		return veList;
+	}
 
 	/**
 	 * 所有蔬菜列表

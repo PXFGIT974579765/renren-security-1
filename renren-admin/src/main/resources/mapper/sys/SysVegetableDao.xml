@@ -14,9 +14,23 @@
 		and time &lt; #{endTime} and time > #{beginTime}
 		order by time ASC;
 	</select>
+	<select id="queryByAreaTime" resultType="SysVegetableEntity">
+		select * from
+		sys_vegetable where area = #{area}
+		and time &lt; #{endTime} and time >= #{beginTime}
+		order by time ASC;
+	</select>
 	<select id="queryByCondition" resultType="SysVegetableEntity">
 		select * from sys_vegetable where name = #{name}
 		and time &lt; #{endTime} and time > #{beginTime}
+		<if test="area != null and area !='' ">
+			and area = #{area}
+		</if>
+		order by time ASC;
+	</select>
+	
+	<select id="queryByArea" resultType="SysVegetableEntity">
+		select * from sys_vegetable where  time = (select max(time) from sys_vegetable)
 		<if test="area != null and area !='' ">
 			and area = #{area}
 		</if>

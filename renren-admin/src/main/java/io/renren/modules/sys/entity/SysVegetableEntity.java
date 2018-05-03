@@ -37,6 +37,33 @@ public class SysVegetableEntity implements Serializable {
 	 * 最低价格
 	 */
 	private double lPrice;
+	
+	/**
+	 * 前三天最低价格平均值
+	 */
+	@Transient
+	private double threeAgoLPrice;
+	/**
+	 * 前三天最高价格平均值
+	 */
+	@Transient
+	private double threeAgoHPrice;
+
+	public double getThreeAgoLPrice() {
+		return threeAgoLPrice;
+	}
+
+	public void setThreeAgoLPrice(double threeAgoLPrice) {
+		this.threeAgoLPrice = threeAgoLPrice;
+	}
+
+	public double getThreeAgoHPrice() {
+		return threeAgoHPrice;
+	}
+
+	public void setThreeAgoHPrice(double threeAgoHPrice) {
+		this.threeAgoHPrice = threeAgoHPrice;
+	}
 
 	/**
 	 * 蔬菜种类
