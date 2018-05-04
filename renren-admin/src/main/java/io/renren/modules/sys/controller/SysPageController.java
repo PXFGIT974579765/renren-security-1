@@ -38,6 +38,12 @@ public class SysPageController {
 		return "sucai-dapin";
 	}
 	
+	@SysLog("调用地图页面")
+	@RequestMapping("map-dapin")
+	public String dapin(){
+		return "map";
+	}
+	
 	@SysLog("调用系统大屏页面p")
 	@RequestMapping("sucai-dapin-p")
 	public String dapin2(Model model,String name,String area){
