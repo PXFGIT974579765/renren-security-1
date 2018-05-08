@@ -210,13 +210,13 @@ canvas { width: 100%; height: 100%; position: absolute;z-index:0}
 					rawData[0].hPrice, rawData[0].hPrice ]);
 			lprice.push([ rawData[0].lPrice, rawData[0].lPrice,
 					rawData[0].lPrice, rawData[0].lPrice ]);
-
-			if (rawData[0].predicHPrice == '' || rawData[0].predicHPrice == 0.0) {
+          
+			if (rawData[0].predicHPrice == null || rawData[0].predicHPrice == '' || rawData[0].predicHPrice == 0.0) {
 				hpreprice.push('-');
 			} else {
 				hpreprice.push(rawData[0].predicHPrice);
 			}
-			if (rawData[0].predicLPrice == '' || rawData[0].predicLPrice == 0.0) {
+			if (rawData[0].predicLPrice == null || rawData[0].predicLPrice == '' || rawData[0].predicLPrice == 0.0) {
 				lpreprice.push('-');
 			} else {
 				lpreprice.push(rawData[0].predicLPrice);
@@ -230,13 +230,15 @@ canvas { width: 100%; height: 100%; position: absolute;z-index:0}
 						rawData[i].hPrice, rawData[i - 1].hPrice ]);
 				lprice.push([ rawData[i].lPrice, rawData[i - 1].lPrice,
 						rawData[i].lPrice, rawData[i - 1].lPrice ]);
-				if (rawData[i].predicHPrice == ''
-						|| rawData[i].predicHPrice == 0.0) {
+				if (rawData[i].predicHPrice == null
+						|| rawData[i].predicHPrice == 0.0 
+						|| rawData[i].predicHPrice == '')  {
 					hpreprice.push('-');
 				} else {
 					hpreprice.push((rawData[i].predicHPrice).toFixed(2));
 				}
-				if (rawData[i].predicLPrice == ''
+				if ( rawData[i].predicLPrice == null   
+					    ||rawData[i].predicLPrice == ''
 						|| rawData[i].predicLPrice == 0.0) {
 					lpreprice.push('-');
 				} else {
