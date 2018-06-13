@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.service.IService;
 import io.renren.common.utils.PageUtils;
 import io.renren.modules.job.entity.ScheduleJobEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,4 +50,6 @@ public interface ScheduleJobService extends IService<ScheduleJobEntity> {
 	 * 恢复运行
 	 */
 	void resume(Long[] jobIds);
+
+	List<ScheduleJobEntity> queryAll();
 }

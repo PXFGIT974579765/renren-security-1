@@ -31,13 +31,11 @@ public class ScheduleJobEntity implements Serializable {
 	/**
 	 * spring bean名称
 	 */
-	@NotBlank(message="bean名称不能为空")
 	private String beanName;
 	
 	/**
 	 * 方法名
 	 */
-	@NotBlank(message="方法名称不能为空")
 	private String methodName;
 	
 	/**
@@ -52,14 +50,95 @@ public class ScheduleJobEntity implements Serializable {
 	private String cronExpression;
 
 	/**
+	 * 任务类型，0  本地任务，1远程任务
+	 */
+	private Integer type;
+
+	/**
+	 * 任务名称
+	 */
+	@NotBlank(message="任务名称不能为空")
+	private String jobName;
+	/**
+	 * 阻塞于任务id，用英文,隔开，如1,2,3
+	 */
+	private String blockJobIds;
+
+
+
+	/**
+	 * 调度的方式 0-类名方法名参数 ，1-restful-api  2-shell脚本
+	 */
+	private Integer mode;
+
+	/**
+	 * 远程调度的rest api，当mode为1并且选择调度方式为api时填写
+	 */
+	private String dispatchApi;
+
+	/**
+	 * 任务调度成功的返回值
+	 */
+	private String dispatchSuccessValue;
+
+	/**
+	 * 任务调度失败的返回值
+	 */
+	private String dispatchFailValue;
+
+
+
+	/**
+	 * 远程调度的shell 脚本，当mode为1并且选择调度方式为shell脚本时填写
+	 */
+	private String shell;
+
+
+
+	/**
+	 * quartz客户端部署的服务器ip地址
+
+	 */
+	private String clientIp;
+	/**
+	 * 任务正常过程中的状态，当status为0时有效，0 阻塞状态，1 调度成功，2 调度失败，3 已查询
+	 */
+	private Integer state;
+	/**
+	 * 查询任务执行结果状态api
+	 */
+	private String queryApi;
+	/**
+	 * 任务状态查询执行成功之后的返回值
+	 */
+	private String querySuccessValue;
+	/**
+	 * 任务查询执行失败之后的返回值
+	 */
+	private String queryFailValue;
+	/**
+	 * 时隔多少秒后进行任务结果查询，单位秒
+	 */
+	private String intervalSeconds;
+
+
+	/**
+	 * 任务执行结果是否需要单独查询 0 不需要 ，1 需要
+	 */
+	private Integer needQueryFlag;
+	/**
 	 * 任务状态
 	 */
 	private Integer status;
+
+
 
 	/**
 	 * 备注
 	 */
 	private String remark;
+
+
 
 	/**
 	 * 创建时间
@@ -161,5 +240,122 @@ public class ScheduleJobEntity implements Serializable {
 	 */
 	public Date getCreateTime() {
 		return createTime;
+	}
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public String getJobName() {
+		return jobName;
+	}
+
+	public void setJobName(String jobName) {
+		this.jobName = jobName;
+	}
+
+	public String getBlockJobIds() {
+		return blockJobIds;
+	}
+
+	public void setBlockJobIds(String blockJobIds) {
+		this.blockJobIds = blockJobIds;
+	}
+
+	public Integer getMode() {
+		return mode;
+	}
+
+	public void setMode(Integer mode) {
+		this.mode = mode;
+	}
+
+	public String getShell() {
+		return shell;
+	}
+
+	public void setShell(String shell) {
+		this.shell = shell;
+	}
+	public String getClientIp() {
+		return clientIp;
+	}
+
+	public void setClientIp(String clientIp) {
+		this.clientIp = clientIp;
+	}
+	public String getDispatchApi() {
+		return dispatchApi;
+	}
+
+	public void setDispatchApi(String dispatchApi) {
+		this.dispatchApi = dispatchApi;
+	}
+
+	public String getDispatchSuccessValue() {
+		return dispatchSuccessValue;
+	}
+
+	public void setDispatchSuccessValue(String dispatchSuccessValue) {
+		this.dispatchSuccessValue = dispatchSuccessValue;
+	}
+
+	public String getDispatchFailValue() {
+		return dispatchFailValue;
+	}
+
+	public void setDispatchFailValue(String dispatchFailValue) {
+		this.dispatchFailValue = dispatchFailValue;
+	}
+
+	public Integer getState() {
+		return state;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
+	}
+
+	public String getQueryApi() {
+		return queryApi;
+	}
+
+	public void setQueryApi(String queryApi) {
+		this.queryApi = queryApi;
+	}
+
+	public String getQuerySuccessValue() {
+		return querySuccessValue;
+	}
+
+	public void setQuerySuccessValue(String querySuccessValue) {
+		this.querySuccessValue = querySuccessValue;
+	}
+
+	public String getQueryFailValue() {
+		return queryFailValue;
+	}
+
+	public void setQueryFailValue(String queryFailValue) {
+		this.queryFailValue = queryFailValue;
+	}
+
+	public String getIntervalSeconds() {
+		return intervalSeconds;
+	}
+
+	public void setIntervalSeconds(String intervalSeconds) {
+		this.intervalSeconds = intervalSeconds;
+	}
+
+	public Integer getNeedQueryFlag() {
+		return needQueryFlag;
+	}
+
+	public void setNeedQueryFlag(Integer needQueryFlag) {
+		this.needQueryFlag = needQueryFlag;
 	}
 }

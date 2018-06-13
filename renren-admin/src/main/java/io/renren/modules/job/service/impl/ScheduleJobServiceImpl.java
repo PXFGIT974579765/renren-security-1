@@ -126,5 +126,12 @@ public class ScheduleJobServiceImpl extends ServiceImpl<ScheduleJobDao, Schedule
 
     	updateBatch(jobIds, Constant.ScheduleStatus.NORMAL.getValue());
     }
-    
+/*
+*  查询所有任务
+ */
+	@Override
+	public List<ScheduleJobEntity> queryAll() {
+		return baseMapper.queryAll();
+	}
+
 }
