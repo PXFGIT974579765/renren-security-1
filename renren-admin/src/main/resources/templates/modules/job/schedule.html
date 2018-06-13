@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html >
 <head>
 <title>定时任务</title>
 <#include "/header.html">
@@ -38,33 +38,134 @@
 	    <table id="jqGrid"></table>
 	    <div id="jqGridPager"></div>
 	</div>
-	
+
 	<div v-show="!showList" class="panel panel-default">
 		<div class="panel-heading">{{title}}</div>
-		<form class="form-horizontal">
+		<form class="form-horizontal" id="schedule-form">
 			<div class="form-group">
+				<div class="col-sm-2 control-label">任务类型</div>
+				<div class="col-sm-10">
+					<select class="form-control" v-model="schedule.type" @change="typeChangeCallback">
+						<option v-for="option in typeOptions" v-bind:value="option.value">
+							{{ option.text }}
+						</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label">阻塞于</div>
+				<div class="col-sm-10" >
+					<multiple-select v-bind:optionsdata="multiple.jobList" v-on:blockids="getBlockJobIds"  v-bind:selecteddata="multiple.selectedJobList" v-on:selected="multipleCallback"></multiple-select>
+					<input type="hidden" v-model="schedule.blockJobIds" >
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label">调度模式</div>
+				<div class="col-sm-10">
+					<select class="form-control" v-model="schedule.mode" @change="modeChangeCallback">
+						<option v-for="option in modeOptions" v-bind:value="option.value">
+							{{ option.text }}
+						</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="form-group" v-show="showMode0">
 			   	<div class="col-sm-2 control-label">bean名称</div>
 			   	<div class="col-sm-10">
 			      <input type="text" class="form-control" v-model="schedule.beanName" placeholder="spring bean名称，如：testTask"/>
 			    </div>
 			</div>
-			<div class="form-group">
+			<div class="form-group" v-show="showMode0">
 			   	<div class="col-sm-2 control-label">方法名称</div>
 			   	<div class="col-sm-10">
 			      <input type="text" class="form-control" v-model="schedule.methodName" placeholder="方法名称"/>
 			    </div>
 			</div>
-			<div class="form-group">
+			<div class="form-group" v-show="showMode0">
 			   	<div class="col-sm-2 control-label">参数</div>
 			   	<div class="col-sm-10">
 			      <input type="text" class="form-control" v-model="schedule.params" placeholder="参数"/>
 			    </div>
 			</div>
+			<div class="form-group" v-show="showMode1">
+				<div class="col-sm-2 control-label">任务调度api地址</div>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" v-model="schedule.dispatchApi" placeholder="请填写任务调度url"/>
+				</div>
+			</div>
+
+			<div class="form-group" v-show="showMode2">
+				<div class="col-sm-2 control-label">shell脚本</div>
+				<div class="col-sm-10">
+					<textarea type="text" class="form-control" v-model="schedule.shell" placeholder="请填写任务调度的shell脚本"></textarea>
+				</div>
+			</div>
+			<div class="form-group" v-show="showMode2">
+				<div class="col-sm-2 control-label">quartz客户端地址</div>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" v-model="schedule.clientIp" placeholder="请填写qurtz客户端部署的ip地址"/>
+				</div>
+			</div>
+
+
+			<!--以下为公共模块-->
+			<div class="form-group">
+				<div class="col-sm-2 control-label">任务名称</div>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" v-model="schedule.jobName"  placeholder="请填写任务名称"/>
+				</div>
+			</div>
 			<div class="form-group">
 			   	<div class="col-sm-2 control-label">cron表达式</div>
 			   	<div class="col-sm-10">
-			      <input type="text" class="form-control" v-model="schedule.cronExpression" placeholder="如：0 0 12 * * ?"/>
+			      <input type="text" class="form-control" v-model="schedule.cronExpression"  placeholder="如：0 0 12 * * ?"/>
 			    </div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label">任务调度成功返回标志</div>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" v-model="schedule.dispatchSuccessValue"  placeholder="也可作为任务执行成功返回标志"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label">任务调度失败标志</div>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" v-model="schedule.dispatchFailValue"  placeholder="也可作为任务执行失败返回标志"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label">是否需要单独查询任务执行结果</div>
+				<div class="col-sm-10">
+					<select class="form-control" v-model="schedule.needQueryFlag" >
+						<option value="0" >不需要</option>
+						<option value="1">需要</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group" v-show="schedule.needQueryFlag==1">
+				<div class="col-sm-2 control-label">调度成功后多少秒查询执行结果</div>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" v-model="schedule.intervalSeconds" placeholder="单位秒"/>
+				</div>
+			</div>
+			<div class="form-group" v-show="schedule.needQueryFlag==1 && showMode1">
+				<div class="col-sm-2 control-label">查询任务执行结果api</div>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" v-model="schedule.queryApi" placeholder="请输入查询任务执行结果api"/>
+				</div>
+			</div>
+			<div class="form-group" v-show="schedule.needQueryFlag==1">
+				<div class="col-sm-2 control-label">任务执行成功的返回标志</div>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" v-model="schedule.querySuccessValue" placeholder="请输入任务执行成功的返回标志"/>
+				</div>
+			</div>
+			<div class="form-group" v-show="schedule.needQueryFlag==1">
+				<div class="col-sm-2 control-label">任务执行成功的返回标志</div>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" v-model="schedule.queryFailValue" placeholder="请输入任务执行成功的返回标志"/>
+				</div>
 			</div>
 			<div class="form-group">
 			   	<div class="col-sm-2 control-label">备注</div>
@@ -73,8 +174,9 @@
 			    </div>
 			</div>
 			<div class="form-group">
-				<div class="col-sm-2 control-label"></div> 
+				<div class="col-sm-2 control-label"></div>
 				<input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+				<!--<input style="display: none;"type="submit" id="sub" value="submit" />-->
 				&nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
 			</div>
 		</form>
@@ -82,5 +184,6 @@
 </div>
 
 <script src="${request.contextPath}/statics/js/modules/job/schedule.js?_${.now?long}"></script>
+<script src="${request.contextPath}/statics/js/modules/job/select-vue-component.js?_${.now?long}"></script>
 </body>
 </html>

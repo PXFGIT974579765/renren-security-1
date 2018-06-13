@@ -12,6 +12,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,6 +34,14 @@ public class ScheduleJobController {
 		PageUtils page = scheduleJobService.queryPage(params);
 
 		return R.ok().put("page", page);
+	}
+
+	@RequestMapping("/all")
+	@RequiresPermissions("sys:schedule:list")
+	public R all(){
+		List<ScheduleJobEntity> list = scheduleJobService.queryAll();
+
+		return R.ok().put("list", list);
 	}
 	
 	/**
