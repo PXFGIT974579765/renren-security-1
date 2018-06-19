@@ -106,6 +106,18 @@ public class ScheduleJobController {
 		
 		return R.ok();
 	}
+
+	/**
+	 * 拉去任务最新状态
+	 */
+	@SysLog("拉去任务最新状态")
+	@RequestMapping("/pullstate")
+	@RequiresPermissions("sys:schedule:run")
+	public R pullJobState(@RequestBody Long[] jobIds){
+		scheduleJobService.createJobForQueryState(jobIds);
+
+		return R.ok();
+	}
 	
 	/**
 	 * 暂停定时任务

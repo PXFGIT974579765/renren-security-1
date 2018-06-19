@@ -20,6 +20,11 @@ public interface ScheduleJobService extends IService<ScheduleJobEntity> {
 	 * 保存定时任务
 	 */
 	void save(ScheduleJobEntity scheduleJob);
+
+	/**
+	 * 创建查询状态任务
+	 */
+	void createJobForQueryState(Long[] jobIds);
 	
 	/**
 	 * 更新定时任务
@@ -50,6 +55,8 @@ public interface ScheduleJobService extends IService<ScheduleJobEntity> {
 	 * 恢复运行
 	 */
 	void resume(Long[] jobIds);
-
+	/**
+	 * 查询所有的job
+	 */
 	List<ScheduleJobEntity> queryAll();
 }
