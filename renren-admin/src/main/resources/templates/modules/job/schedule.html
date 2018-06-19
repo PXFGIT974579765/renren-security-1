@@ -12,7 +12,9 @@
 				<input type="text" class="form-control" v-model="q.beanName" @keyup.enter="query" placeholder="bean名称">
 			</div>
 			<a class="btn btn-default" @click="query">查询</a>
-
+			<#if shiro.hasPermission("sys:schedule:info")>
+			<a class="btn btn-primary" @click="detail"><i class="fa fa-reorder"></i>&nbsp;查看</a>
+		    </#if>
 			<#if shiro.hasPermission("sys:schedule:save")>
 			<a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
 			</#if>
@@ -23,14 +25,18 @@
 			<a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
 			</#if>
 			<#if shiro.hasPermission("sys:schedule:pause")>
-			<a class="btn btn-primary" @click="pause"><i class="fa fa-pause"></i>&nbsp;暂停</a>
+			<a class="btn btn-primary" @click="pause"><i class="fa fa-pause"></i>&nbsp;关闭</a>
 			</#if>
 			<#if shiro.hasPermission("sys:schedule:resume")>
-			<a class="btn btn-primary" @click="resume"><i class="fa fa-play"></i>&nbsp;恢复</a>
+			<a class="btn btn-primary" @click="resume"><i class="fa fa-play"></i>&nbsp;开启</a>
 			</#if>
 			<#if shiro.hasPermission("sys:schedule:run")>
 			<a class="btn btn-primary" @click="runOnce"><i class="fa fa-arrow-circle-right"></i>&nbsp;立即执行</a>
 			</#if>
+			<#if shiro.hasPermission("sys:schedule:run")>
+			<a class="btn btn-primary" @click="queryOnce"><i class="fa fa-arrow-circle-right"></i>&nbsp;更新状态</a>
+			</#if>
+
 			<#if shiro.hasPermission("sys:schedule:log")>
 			<a class="btn btn-danger" style="float:right;" href="schedule_log.html">日志列表</a>
 			</#if>
@@ -91,20 +97,20 @@
 			<div class="form-group" v-show="showMode1">
 				<div class="col-sm-2 control-label">任务调度api地址</div>
 				<div class="col-sm-10">
-					<input type="text" class="form-control" v-model="schedule.dispatchApi" placeholder="请填写任务调度url"/>
+					<input type="text" class="form-control" v-model="schedule.dispatchApi" placeholder="如：http://localhost:8080/api/job/start"/>
 				</div>
 			</div>
 
 			<div class="form-group" v-show="showMode2">
-				<div class="col-sm-2 control-label">shell脚本</div>
+				<div class="col-sm-2 control-label">任务调度shell脚本</div>
 				<div class="col-sm-10">
-					<textarea type="text" class="form-control" v-model="schedule.shell" placeholder="请填写任务调度的shell脚本"></textarea>
+					<textarea type="text" class="form-control" v-model="schedule.dispatchShell" placeholder="如：tomcat service start"></textarea>
 				</div>
 			</div>
 			<div class="form-group" v-show="showMode2">
 				<div class="col-sm-2 control-label">quartz客户端地址</div>
 				<div class="col-sm-10">
-					<input type="text" class="form-control" v-model="schedule.clientIp" placeholder="请填写qurtz客户端部署的ip地址"/>
+					<input type="text" class="form-control" v-model="schedule.clientIp" placeholder="如：127.0.0.1"/>
 				</div>
 			</div>
 
@@ -113,7 +119,7 @@
 			<div class="form-group">
 				<div class="col-sm-2 control-label">任务名称</div>
 				<div class="col-sm-10">
-					<input type="text" class="form-control" v-model="schedule.jobName"  placeholder="请填写任务名称"/>
+					<input type="text" class="form-control" v-model="schedule.jobName"  placeholder="如：凌晨一点报表产生"/>
 				</div>
 			</div>
 			<div class="form-group">
@@ -122,20 +128,20 @@
 			      <input type="text" class="form-control" v-model="schedule.cronExpression"  placeholder="如：0 0 12 * * ?"/>
 			    </div>
 			</div>
-			<div class="form-group">
-				<div class="col-sm-2 control-label">任务调度成功返回标志</div>
+			<div class="form-group" v-show="!showMode0">
+				<div class="col-sm-2 control-label" >任务调度成功标志</div>
 				<div class="col-sm-10">
-					<input type="text" class="form-control" v-model="schedule.dispatchSuccessValue"  placeholder="也可作为任务执行成功返回标志"/>
+					<input type="text" class="form-control" v-model="schedule.dispatchSuccessValue"  placeholder="code(接受格式{code:0,msg:成功,data:{}})"/>
 				</div>
 			</div>
-			<div class="form-group">
+			<div class="form-group" v-show="!showMode0">
 				<div class="col-sm-2 control-label">任务调度失败标志</div>
 				<div class="col-sm-10">
-					<input type="text" class="form-control" v-model="schedule.dispatchFailValue"  placeholder="也可作为任务执行失败返回标志"/>
+					<input type="text" class="form-control" v-model="schedule.dispatchFailValue"  placeholder="code(接受格式{code:1,msg:失败,data:{}})"/>
 				</div>
 			</div>
-			<div class="form-group">
-				<div class="col-sm-2 control-label">是否需要单独查询任务执行结果</div>
+			<div class="form-group" v-show="!showMode0">
+				<div class="col-sm-2 control-label">异步查询任务执行状态</div>
 				<div class="col-sm-10">
 					<select class="form-control" v-model="schedule.needQueryFlag" >
 						<option value="0" >不需要</option>
@@ -144,27 +150,33 @@
 				</div>
 			</div>
 			<div class="form-group" v-show="schedule.needQueryFlag==1">
-				<div class="col-sm-2 control-label">调度成功后多少秒查询执行结果</div>
+				<div class="col-sm-2 control-label">异步查询任务执行结果时间间隔</div>
 				<div class="col-sm-10">
 					<input type="text" class="form-control" v-model="schedule.intervalSeconds" placeholder="单位秒"/>
 				</div>
 			</div>
 			<div class="form-group" v-show="schedule.needQueryFlag==1 && showMode1">
-				<div class="col-sm-2 control-label">查询任务执行结果api</div>
+				<div class="col-sm-2 control-label">异步查询任务执行结果api</div>
 				<div class="col-sm-10">
-					<input type="text" class="form-control" v-model="schedule.queryApi" placeholder="请输入查询任务执行结果api"/>
+					<input type="text" class="form-control" v-model="schedule.queryApi" placeholder="如：http://localhost:8080/api/job/query"/>
+				</div>
+			</div>
+			<div class="form-group" v-show="schedule.needQueryFlag==1 && showMode2">
+				<div class="col-sm-2 control-label">异步查询任务执行结果所需shell脚本</div>
+				<div class="col-sm-10">
+					<textarea type="text" class="form-control" v-model="schedule.queryShell" placeholder="如：ps -ef|grep tomcat"></textarea>
 				</div>
 			</div>
 			<div class="form-group" v-show="schedule.needQueryFlag==1">
-				<div class="col-sm-2 control-label">任务执行成功的返回标志</div>
+				<div class="col-sm-2 control-label">异步查询返回成功的标志</div>
 				<div class="col-sm-10">
-					<input type="text" class="form-control" v-model="schedule.querySuccessValue" placeholder="请输入任务执行成功的返回标志"/>
+					<input type="text" class="form-control" v-model="schedule.querySuccessValue" placeholder="模糊msg(接受格式{code:0,msg:成功,data:{}})"/>
 				</div>
 			</div>
 			<div class="form-group" v-show="schedule.needQueryFlag==1">
-				<div class="col-sm-2 control-label">任务执行成功的返回标志</div>
+				<div class="col-sm-2 control-label">异步查询返回失败的标志</div>
 				<div class="col-sm-10">
-					<input type="text" class="form-control" v-model="schedule.queryFailValue" placeholder="请输入任务执行成功的返回标志"/>
+					<input type="text" class="form-control" v-model="schedule.queryFailValue" placeholder="模糊msg(接受格式{code:1,msg:失败,data:{}})"/>
 				</div>
 			</div>
 			<div class="form-group">
@@ -175,9 +187,9 @@
 			</div>
 			<div class="form-group">
 				<div class="col-sm-2 control-label"></div>
-				<input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+				<input type="button" id="submitBtn" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
 				<!--<input style="display: none;"type="submit" id="sub" value="submit" />-->
-				&nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+				&nbsp;&nbsp;<input type="button" id="backBtn" class="btn btn-warning" @click="reload" value="返回"/>
 			</div>
 		</form>
 	</div>

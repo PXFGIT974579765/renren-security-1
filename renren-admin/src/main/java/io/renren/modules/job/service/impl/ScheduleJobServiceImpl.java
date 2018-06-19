@@ -71,7 +71,26 @@ public class ScheduleJobServiceImpl extends ServiceImpl<ScheduleJobDao, Schedule
         
         ScheduleUtils.createScheduleJob(scheduler, scheduleJob);
     }
-	
+	/**
+	 * 创建查询执行状态任务
+	 */
+	@Override
+	public void createJobForQueryState(Long[] jobIds) {
+		for(Long jobId : jobIds){
+			ScheduleJobEntity job=this.selectById(jobId);
+			//任务执行结果是否需要单独查询 0不需要 ，1需要
+			System.out.println(job.getNeedQueryFlag().intValue()==1);
+			System.out.println(job.getState().intValue()==Constant.ScheduleStates.EXCUTE_SUCCESS.getValue());
+			if(job.getNeedQueryFlag().intValue()==1&&job.getState()==Constant.ScheduleStates.EXCUTE_SUCCESS.getValue()){
+				ScheduleUtils.deleteScheduleJob(scheduler,"q_"+job.getJobId());
+				ScheduleUtils.createScheduleStateQueryJob(scheduler, job);
+				ScheduleUtils.runQuery(scheduler, job);
+			}
+		}
+
+	}
+
+
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public void update(ScheduleJobEntity scheduleJob) {

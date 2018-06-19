@@ -91,7 +91,13 @@ public class ScheduleJobEntity implements Serializable {
 	/**
 	 * 远程调度的shell 脚本，当mode为1并且选择调度方式为shell脚本时填写
 	 */
-	private String shell;
+	private String dispatchShell;
+
+	/**
+	 * 任务执行结果查询的shell 脚本，当mode为1并且选择调度方式为shell脚本时填写
+	 */
+	private String queryShell;
+
 
 
 
@@ -101,7 +107,7 @@ public class ScheduleJobEntity implements Serializable {
 	 */
 	private String clientIp;
 	/**
-	 * 任务正常过程中的状态，当status为0时有效，0 阻塞状态，1 调度成功，2 调度失败，3 已查询
+	 * 任务正常过程中的状态，当status为0时有效，0,正常状态 1 阻塞状态，2 调度成功，3 调度失败，4 执行成功，5 执行失败
 	 */
 	private Integer state;
 	/**
@@ -273,15 +279,24 @@ public class ScheduleJobEntity implements Serializable {
 		this.mode = mode;
 	}
 
-	public String getShell() {
-		return shell;
-	}
-
-	public void setShell(String shell) {
-		this.shell = shell;
-	}
 	public String getClientIp() {
 		return clientIp;
+	}
+
+	public String getDispatchShell() {
+		return dispatchShell;
+	}
+
+	public void setDispatchShell(String dispatchShell) {
+		this.dispatchShell = dispatchShell;
+	}
+
+	public String getQueryShell() {
+		return queryShell;
+	}
+
+	public void setQueryShell(String queryShell) {
+		this.queryShell = queryShell;
 	}
 
 	public void setClientIp(String clientIp) {
