@@ -35,26 +35,28 @@ public class ScheduleJobServiceImpl extends ServiceImpl<ScheduleJobDao, Schedule
 		List<ScheduleJobEntity> scheduleJobList = this.selectList(null);
 		for(ScheduleJobEntity scheduleJob : scheduleJobList){
 			CronTrigger cronTrigger = null;
-			try {
-				cronTrigger = ScheduleUtils.getCronTrigger(scheduler, scheduleJob.getJobId());
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if(scheduleJob.getIsZparent()==1){
+				try {
+					cronTrigger = ScheduleUtils.getCronTrigger(scheduler, scheduleJob.getJobId());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if(cronTrigger == null) {
+					ScheduleUtils.createScheduleJob(scheduler, scheduleJob);
+				}else {
+					ScheduleUtils.updateScheduleJob(scheduler, scheduleJob);
+				}
 			}
-            if(cronTrigger == null) {
-                ScheduleUtils.createScheduleJob(scheduler, scheduleJob);
-            }else {
-                ScheduleUtils.updateScheduleJob(scheduler, scheduleJob);
-            }
+
 		}
 	}
 
 	@Override
-	public PageUtils queryPage(Map<String, Object> params) {
+	public PageUtils queryPage(Map<String, Object> params,Map<String, Object> condition) {
 		String beanName = (String)params.get("beanName");
-
 		Page<ScheduleJobEntity> page = this.selectPage(
-				new Query<ScheduleJobEntity>(params).getPage(),
+				new Query<ScheduleJobEntity>(params).getPage().setCondition(condition),
 				new EntityWrapper<ScheduleJobEntity>().like(StringUtils.isNotBlank(beanName),"bean_name", beanName)
 		);
 
@@ -67,8 +69,29 @@ public class ScheduleJobServiceImpl extends ServiceImpl<ScheduleJobDao, Schedule
 	public void save(ScheduleJobEntity scheduleJob) {
 		scheduleJob.setCreateTime(new Date());
 		scheduleJob.setStatus(Constant.ScheduleStatus.NORMAL.getValue());
-        this.insert(scheduleJob);
-        
+		String blockId=scheduleJob.getBlockJobIds();
+		if(StringUtils.isEmpty(blockId)){
+			//是否是起始节点  1 是  0 不是
+			scheduleJob.setIsZparent(1);
+			this.insert(scheduleJob);
+		}else{
+			scheduleJob.setIsZparent(0);
+			ScheduleJobEntity parent=this.selectById(blockId);
+			scheduleJob.setParent(Integer.valueOf(blockId));
+			if(parent.getZparent()==null){
+				scheduleJob.setZparent(parent.getJobId().intValue());
+			}else{
+				scheduleJob.setZparent(parent.getZparent());
+			}
+			this.insert(scheduleJob);
+			if(StringUtils.isBlank(parent.getChild()+"")){
+				parent.setChild(scheduleJob.getJobId()+"");
+			}else{
+				parent.setChild(parent.getChild()+","+scheduleJob.getJobId());
+			}
+			this.updateById(parent);
+		}
+
         ScheduleUtils.createScheduleJob(scheduler, scheduleJob);
     }
 	/**
@@ -80,23 +103,75 @@ public class ScheduleJobServiceImpl extends ServiceImpl<ScheduleJobDao, Schedule
 			ScheduleJobEntity job=this.selectById(jobId);
 			//任务执行结果是否需要单独查询 0不需要 ，1需要
 			System.out.println(job.getNeedQueryFlag().intValue()==1);
-			System.out.println(job.getState().intValue()==Constant.ScheduleStates.EXCUTE_SUCCESS.getValue());
-			if(job.getNeedQueryFlag().intValue()==1&&job.getState()==Constant.ScheduleStates.EXCUTE_SUCCESS.getValue()){
+			System.out.println(job.getState().intValue()==Constant.ScheduleStates.DISPATCH_SUCCESS.getValue());
+			if(job.getNeedQueryFlag().intValue()==1&&job.getState()==Constant.ScheduleStates.DISPATCH_SUCCESS.getValue()){
 				ScheduleUtils.deleteScheduleJob(scheduler,"q_"+job.getJobId());
 				ScheduleUtils.createScheduleStateQueryJob(scheduler, job);
-				ScheduleUtils.runQuery(scheduler, job);
+				//ScheduleUtils.runQuery(scheduler, job);
 			}
 		}
 
+	}
+
+	@Override
+	public void notifyChildJob(String[] jobIds) {
+		if(jobIds!=null&&jobIds.length>0){
+			List<ScheduleJobEntity> childs=this.selectBatchIds(Arrays.asList(jobIds));
+			childs.forEach(job->{
+				ScheduleUtils.deleteScheduleJob(scheduler,job.getJobId());
+				ScheduleUtils.createSimpleJob(scheduler,job);
+			});
+		}
 	}
 
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public void update(ScheduleJobEntity scheduleJob) {
-        ScheduleUtils.updateScheduleJob(scheduler, scheduleJob);
-                
-        this.updateById(scheduleJob);
+
+		String blockId=scheduleJob.getBlockJobIds();
+		if(StringUtils.isBlank(blockId)){
+			//是否是起始节点  1 是  0 不是
+			scheduleJob.setIsZparent(1);
+			scheduleJob.setBlockJobIds(" ");
+			this.updateById(scheduleJob);
+		}else{
+			scheduleJob.setIsZparent(0);
+
+			ScheduleJobEntity parent=this.selectById(blockId);
+			scheduleJob.setParent(Integer.valueOf(blockId));
+			if(parent.getZparent()==null){
+				scheduleJob.setZparent(parent.getJobId().intValue());
+			}else{
+				scheduleJob.setZparent(parent.getZparent());
+			}
+			this.updateById(scheduleJob);
+			if(StringUtils.isBlank(parent.getChild()+"")){
+				parent.setChild(scheduleJob.getJobId()+"");
+			}else{
+				if(!Arrays.asList(parent.getChild().split(",")).contains(scheduleJob.getJobId())){
+					parent.setChild(parent.getChild()+","+scheduleJob.getJobId());
+				}
+			}
+			this.updateById(parent);
+		}
+		if(scheduleJob.getIsZparent()==1){
+			CronTrigger cronTrigger = null;
+			try {
+				cronTrigger = ScheduleUtils.getCronTrigger(scheduler, scheduleJob.getJobId());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if(cronTrigger == null) {
+				ScheduleUtils.createScheduleJob(scheduler, scheduleJob);
+			}else {
+				ScheduleUtils.updateScheduleJob(scheduler, scheduleJob);
+			}
+		}
+
+
+
     }
 
 	@Override

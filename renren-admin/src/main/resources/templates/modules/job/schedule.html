@@ -41,7 +41,7 @@
 			<a class="btn btn-danger" style="float:right;" href="schedule_log.html">日志列表</a>
 			</#if>
 		</div>
-	    <table id="jqGrid"></table>
+	    <table id="jqGrid_table"></table>
 	    <div id="jqGridPager"></div>
 	</div>
 
@@ -128,18 +128,25 @@
 			      <input type="text" class="form-control" v-model="schedule.cronExpression"  placeholder="如：0 0 12 * * ?"/>
 			    </div>
 			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label">任务调度失败重试心跳间隔</div>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" v-model="schedule.dispatchIntervalTimes"  placeholder="单位秒.如：5"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label">任务调度失败重试心跳次数</div>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" v-model="schedule.dispatchIntervalCounts"  placeholder="如：5"/>
+				</div>
+			</div>
 			<div class="form-group" v-show="!showMode0">
 				<div class="col-sm-2 control-label" >任务调度成功标志</div>
 				<div class="col-sm-10">
 					<input type="text" class="form-control" v-model="schedule.dispatchSuccessValue"  placeholder="code(接受格式{code:0,msg:成功,data:{}})"/>
 				</div>
 			</div>
-			<div class="form-group" v-show="!showMode0">
-				<div class="col-sm-2 control-label">任务调度失败标志</div>
-				<div class="col-sm-10">
-					<input type="text" class="form-control" v-model="schedule.dispatchFailValue"  placeholder="code(接受格式{code:1,msg:失败,data:{}})"/>
-				</div>
-			</div>
+
 			<div class="form-group" v-show="!showMode0">
 				<div class="col-sm-2 control-label">异步查询任务执行状态</div>
 				<div class="col-sm-10">
@@ -152,7 +159,19 @@
 			<div class="form-group" v-show="schedule.needQueryFlag==1">
 				<div class="col-sm-2 control-label">异步查询任务执行结果时间间隔</div>
 				<div class="col-sm-10">
-					<input type="text" class="form-control" v-model="schedule.intervalSeconds" placeholder="单位秒"/>
+					<input type="text" class="form-control" v-model="schedule.afterSeconds" placeholder="单位秒"/>
+				</div>
+			</div>
+			<div class="form-group" v-show="schedule.needQueryFlag==1">
+				<div class="col-sm-2 control-label" >任务执行不成功重试心跳时间</div>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" v-model="schedule.excuteIntervalTimes"  placeholder="如：5"/>
+				</div>
+			</div>
+			<div class="form-group" v-show="schedule.needQueryFlag==1">
+				<div class="col-sm-2 control-label" >任务执行不成功重试心跳次数</div>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" v-model="schedule.excuteIntervalCounts"  placeholder="如：5"/>
 				</div>
 			</div>
 			<div class="form-group" v-show="schedule.needQueryFlag==1 && showMode1">
@@ -171,12 +190,6 @@
 				<div class="col-sm-2 control-label">异步查询返回成功的标志</div>
 				<div class="col-sm-10">
 					<input type="text" class="form-control" v-model="schedule.querySuccessValue" placeholder="模糊msg(接受格式{code:0,msg:成功,data:{}})"/>
-				</div>
-			</div>
-			<div class="form-group" v-show="schedule.needQueryFlag==1">
-				<div class="col-sm-2 control-label">异步查询返回失败的标志</div>
-				<div class="col-sm-10">
-					<input type="text" class="form-control" v-model="schedule.queryFailValue" placeholder="模糊msg(接受格式{code:1,msg:失败,data:{}})"/>
 				</div>
 			</div>
 			<div class="form-group">

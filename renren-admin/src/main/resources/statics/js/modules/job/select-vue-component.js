@@ -98,6 +98,7 @@ Vue.component('multiple-select', {
         },
         dispatchData: function(){
             // console.log('派发！！');
+            debugger;
             this.$emit('selected', this.selectedList);
             this.$emit('blockids', this.selectedIdList);
         },

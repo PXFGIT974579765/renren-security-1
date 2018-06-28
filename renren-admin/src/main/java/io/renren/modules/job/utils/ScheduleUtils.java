@@ -93,7 +93,8 @@ public class ScheduleUtils {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
             JobDetail jobDetail = JobBuilder.newJob(ScheduleStateJob.class).withIdentity(getJobKey("q_"+scheduleJob.getJobId())).build();
             // 在当前时间15秒后运行
-            Date startTime = DateBuilder.nextGivenSecondDate(new Date( ),Integer.valueOf(scheduleJob.getIntervalSeconds()));
+            //Date startTime = DateBuilder.nextGivenSecondDate(new Date( ),scheduleJob.getAfterSeconds());
+            Date startTime = new Date(System.currentTimeMillis()+Long.valueOf(scheduleJob.getAfterSeconds())*1000L);
             // 创建一个SimpleTrigger实例，指定该Trigger在Scheduler中所属组及名称。
             SimpleTrigger trigger = (SimpleTrigger) TriggerBuilder.newTrigger().withIdentity(getTriggerKey("q_"+scheduleJob.getJobId()))
                     .startAt(startTime).withSchedule(SimpleScheduleBuilder.simpleSchedule())
@@ -107,6 +108,35 @@ public class ScheduleUtils {
             //暂停任务
             if(scheduleJob.getStatus() == Constant.ScheduleStatus.PAUSE.getValue()){
                 pauseJob(scheduler, "q_"+scheduleJob.getJobId());
+            }
+        } catch (SchedulerException e) {
+            throw new RRException("创建定时任务失败", e);
+        }
+    }
+
+    /**
+     * 创建简单schedule，没有cron表达式
+     */
+    public static void createSimpleJob(Scheduler scheduler, ScheduleJobEntity scheduleJob) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            JobDetail jobDetail = JobBuilder.newJob(ScheduleJob.class).withIdentity(getJobKey(scheduleJob.getJobId())).build();
+            // 在当前时间15秒后运行
+            Date startTime = DateBuilder.nextGivenSecondDate(new Date( ),5);
+            //Date startTime = new Date(System.currentTimeMillis()+Long.valueOf(scheduleJob.getAfterSeconds())*1000L);
+            // 创建一个SimpleTrigger实例，指定该Trigger在Scheduler中所属组及名称。
+            SimpleTrigger trigger = (SimpleTrigger) TriggerBuilder.newTrigger().withIdentity(getTriggerKey(scheduleJob.getJobId()))
+                    .startAt(startTime).withSchedule(SimpleScheduleBuilder.simpleSchedule())
+                    .build();
+            //放入参数，运行时的方法可以获取
+            jobDetail.getJobDataMap().put(ScheduleJobEntity.JOB_PARAM_KEY, scheduleJob);
+            scheduler.scheduleJob(jobDetail, trigger);
+            // 调度启动
+            scheduler.start();
+
+            //暂停任务
+            if(scheduleJob.getStatus() == Constant.ScheduleStatus.PAUSE.getValue()){
+                pauseJob(scheduler, scheduleJob.getJobId());
             }
         } catch (SchedulerException e) {
             throw new RRException("创建定时任务失败", e);

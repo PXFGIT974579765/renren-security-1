@@ -12,6 +12,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +32,23 @@ public class ScheduleJobController {
 	@RequestMapping("/list")
 	@RequiresPermissions("sys:schedule:list")
 	public R list(@RequestParam Map<String, Object> params){
-		PageUtils page = scheduleJobService.queryPage(params);
+		Map<String, Object> condition=new HashMap<>();
+		condition.put("is_zparent",1);
+		PageUtils page = scheduleJobService.queryPage(params,condition);
+
+		return R.ok().put("page", page);
+	}
+
+	/**
+	 * 定时任务child列表
+	 */
+	@RequestMapping("/child/{parentId}")
+	@RequiresPermissions("sys:schedule:list")
+	public R child(@PathVariable String parentId,@RequestParam Map<String, Object> params){
+		Map<String, Object> condition=new HashMap<>();
+		condition.put("is_zparent",0);
+		condition.put("zparent",parentId);
+		PageUtils page = scheduleJobService.queryPage(params,condition);
 
 		return R.ok().put("page", page);
 	}

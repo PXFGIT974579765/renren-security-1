@@ -5,8 +5,11 @@ $(function () {
         colModel: [			
             { label: '日志ID', name: 'logId', width: 50, key: true },
 			{ label: '任务ID', name: 'jobId', width: 50},
+			{ label: '任务名称', name: 'jobName', width: 50},
+            { label: '调度方式', name: 'mode', width: 100,formatter:function(cellValue){return cellValue==0?'类方法参数':cellValue==1?'rest api':'shell脚本';} },
             { label: '日志类型', name: 'type', width: 60,formatter:function(cellValue){ return cellValue==0?'调度日志':'查询日志'} },
             { label: '日志结果', name: 'message', width: 60 },
+            { label: '异常信息', name: 'error', width: 60 },
             { label: 'bean名称', name: 'beanName', width: 60 },
 			{ label: '方法名称', name: 'methodName', width: 60 },
 			{ label: '参数', name: 'params', width: 60 },

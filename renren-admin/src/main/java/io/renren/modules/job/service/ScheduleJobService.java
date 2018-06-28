@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public interface ScheduleJobService extends IService<ScheduleJobEntity> {
 
-	PageUtils queryPage(Map<String, Object> params);
+	PageUtils queryPage(Map<String, Object> params,Map<String, Object> condition);
 
 	/**
 	 * 保存定时任务
@@ -25,6 +25,11 @@ public interface ScheduleJobService extends IService<ScheduleJobEntity> {
 	 * 创建查询状态任务
 	 */
 	void createJobForQueryState(Long[] jobIds);
+
+	/**
+	 * 通知子任务
+	 */
+	void notifyChildJob(String[] jobIds);
 	
 	/**
 	 * 更新定时任务

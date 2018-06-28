@@ -68,6 +68,17 @@ public class ScheduleJobLogEntity implements Serializable {
 
 	 */
 	private String message;
+
+	/**
+	 * 任务名称
+
+	 */
+	private String jobName;
+	/**
+	 * 任务模式 调度的方式 0-类名方法名参数 ，1-restful-api  2-shell脚本
+
+	 */
+	private Integer mode;
 	
 	/**
 	 * 创建时间
@@ -161,5 +172,20 @@ public class ScheduleJobLogEntity implements Serializable {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	
+
+	public String getJobName() {
+		return jobName;
+	}
+
+	public void setJobName(String jobName) {
+		this.jobName = jobName;
+	}
+
+	public Integer getMode() {
+		return mode;
+	}
+
+	public void setMode(Integer mode) {
+		this.mode = mode;
+	}
 }
