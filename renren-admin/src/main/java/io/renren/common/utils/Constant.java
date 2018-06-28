@@ -13,6 +13,85 @@ public class Constant {
 	public static final String SQL_FILTER = "sql_filter";
 
 
+
+
+	public enum LogType{
+	    DISPATCH(0),
+        EXCUTE(1);
+        private int value;
+        LogType(int value) {
+            this.value = value;
+        }
+        public int getValue() {
+            return value;
+        }
+    }
+	public enum Client{
+	    PORT(8890);
+        private int value;
+        Client(int value) {
+            this.value = value;
+        }
+        public int getValue() {
+            return value;
+        }
+    }
+	public enum ScheduleMode{
+	    CLASS(0),
+        API(1),
+        SHELL(2);
+        private int value;
+        ScheduleMode(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
+    /**
+     * 任务正常过程中的状态
+     */
+    public enum ScheduleStates {
+        /**
+         * 正常
+         */
+        NOMORL(0),
+        /**
+         * 被阻塞
+         */
+        PAUSED(1),
+        /**
+         * 调度成功
+         */
+        DISPATCH_SUCCESS(2),
+        /**
+         * 调度失败
+         */
+        DISPATCH_FAILE(3),
+        /**
+         * 执行成功
+         */
+        EXCUTE_SUCCESS(4),
+        /**
+         * 执行失败
+         */
+        EXCUTE_FAIL(5);
+
+
+        private int value;
+        ScheduleStates(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+
+
+    }
+
 	/**
 	 * 菜单类型
 	 */

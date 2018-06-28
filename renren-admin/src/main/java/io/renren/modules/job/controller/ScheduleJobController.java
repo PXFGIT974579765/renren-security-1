@@ -12,6 +12,8 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,9 +32,33 @@ public class ScheduleJobController {
 	@RequestMapping("/list")
 	@RequiresPermissions("sys:schedule:list")
 	public R list(@RequestParam Map<String, Object> params){
-		PageUtils page = scheduleJobService.queryPage(params);
+		Map<String, Object> condition=new HashMap<>();
+		condition.put("is_zparent",1);
+		PageUtils page = scheduleJobService.queryPage(params,condition);
 
 		return R.ok().put("page", page);
+	}
+
+	/**
+	 * 定时任务child列表
+	 */
+	@RequestMapping("/child/{parentId}")
+	@RequiresPermissions("sys:schedule:list")
+	public R child(@PathVariable String parentId,@RequestParam Map<String, Object> params){
+		Map<String, Object> condition=new HashMap<>();
+		condition.put("is_zparent",0);
+		condition.put("zparent",parentId);
+		PageUtils page = scheduleJobService.queryPage(params,condition);
+
+		return R.ok().put("page", page);
+	}
+
+	@RequestMapping("/all")
+	@RequiresPermissions("sys:schedule:list")
+	public R all(){
+		List<ScheduleJobEntity> list = scheduleJobService.queryAll();
+
+		return R.ok().put("list", list);
 	}
 	
 	/**
@@ -95,6 +121,18 @@ public class ScheduleJobController {
 	public R run(@RequestBody Long[] jobIds){
 		scheduleJobService.run(jobIds);
 		
+		return R.ok();
+	}
+
+	/**
+	 * 拉去任务最新状态
+	 */
+	@SysLog("拉去任务最新状态")
+	@RequestMapping("/pullstate")
+	@RequiresPermissions("sys:schedule:run")
+	public R pullJobState(@RequestBody Long[] jobIds){
+		scheduleJobService.createJobForQueryState(jobIds);
+
 		return R.ok();
 	}
 	

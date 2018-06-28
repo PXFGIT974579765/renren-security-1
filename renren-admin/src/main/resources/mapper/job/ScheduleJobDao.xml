@@ -11,4 +11,9 @@
 		</foreach>
 	</update>
 
+
+	<select id="queryAll" resultType="ScheduleJobEntity">
+		select * from schedule_job
+	</select>
+
 </mapper>
