@@ -1,5 +1,5 @@
 
-
+var gridTaleIds=[];
 var vm = new Vue({
 	el:'#rrapp',
 	data:{
@@ -21,6 +21,7 @@ var vm = new Vue({
             jobList: [],
             selectedJobList: []
         },
+        flag:null,
         typeOptions:[
             { text: '本地任务', value: '0' },
             { text: '远程任务', value: '1' },
@@ -57,25 +58,35 @@ var vm = new Vue({
             }
 		},
         typeChangeCallback:function(e){
+		    debugger;
 			var type=e.target.value;
             vm.switchType(type);
 
 		},
-		switchType:function(type){
+		switchType:function(type,mode){
+		    debugger;
             if(type==1){
                 vm.modeOptions=[];
-                vm.schedule.mode=1;
-                vm.showMode0=false;
-                vm.showMode1=true;
-                vm.showMode2=false;
                 vm.modeOptions.push({text:'restful-api',value:1},{text:'shell脚本',value:2});
+                if(mode){
+                    vm.schedule.mode=mode;
+                }else{
+                    vm.schedule.mode=1;
+                    vm.showMode0=false;
+                    vm.showMode1=true;
+                    vm.showMode2=false;
+                }
             }else{
                 vm.modeOptions=[];
                 vm.modeOptions.push({text:'类名方法名参数名',value:0},{text:'restful-api',value:1},{text:'shell脚本',value:2});
-                vm.schedule.mode=0;
-                vm.showMode0=true;
-                vm.showMode1=false;
-                vm.showMode2=false;
+                if(mode){
+                    vm.schedule.mode=mode;
+                }else{
+                    vm.schedule.mode=0;
+                    vm.showMode0=true;
+                    vm.showMode1=false;
+                    vm.showMode2=false;
+                }
             }
 		},
         multipleCallback: function(data){
@@ -84,10 +95,12 @@ var vm = new Vue({
            console.log('父级元素调用multipleSelected 选中的是' + JSON.stringify(data))
         },
         getBlockJobIds:function(list){
+			debugger;
 			var ids=list.join(',')
             vm.schedule.blockJobIds=ids;
 		},
         add: function () {
+		    vm.flag="add";
             vm.showList = false;
             vm.title = "新增";
             vm.schedule = {
@@ -96,12 +109,15 @@ var vm = new Vue({
                 mode: 0,
                 needQueryFlag: 0
             };
+            this.multiple.selectedJobList=[];
             $.get(baseURL + "sys/schedule/all", function (r) {
                 vm.multiple.jobList = r.list;
             });
         },
 		update: function () {
-			var jobId = getSelectedRow();
+		    vm.flag="update";
+			debugger;
+			var jobId = getSelectedRow(gridTaleIds);
 			if(jobId == null){
 				return ;
 			}
@@ -111,8 +127,10 @@ var vm = new Vue({
 				vm.showList = false;
                 vm.title = "修改";
 				vm.schedule = r.schedule;
-                //vm.switchMode(vm.schedule.mode);
-                //vm.switchType(vm.schedule.type);
+				debugger;
+				console.log(vm.schedule);
+                vm.switchMode(vm.schedule.mode);
+                vm.switchType(vm.schedule.type,vm.schedule.mode);
                 $.get(baseURL + "sys/schedule/all", function(rs){
                     vm.multiple.jobList = rs.list;
                     var selectedList=[];
@@ -151,7 +169,7 @@ var vm = new Vue({
 			});
 		},
 		del: function (event) {
-			var jobIds = getSelectedRows();
+			var jobIds = getSelectedRows(gridTaleIds);
 			if(jobIds == null){
 				return ;
 			}
@@ -175,7 +193,7 @@ var vm = new Vue({
 			});
 		},
 		pause: function (event) {
-			var jobIds = getSelectedRows();
+            var jobIds = getSelectedRows(gridTaleIds);
 			if(jobIds == null){
 				return ;
 			}
@@ -199,7 +217,7 @@ var vm = new Vue({
 			});
 		},
 		resume: function (event) {
-			var jobIds = getSelectedRows();
+            var jobIds = getSelectedRows(gridTaleIds);
 			if(jobIds == null){
 				return ;
 			}
@@ -223,7 +241,7 @@ var vm = new Vue({
 			});
 		},
 		runOnce: function (event) {
-			var jobIds = getSelectedRows();
+            var jobIds = getSelectedRows(gridTaleIds);
 			if(jobIds == null){
 				return ;
 			}
@@ -247,7 +265,7 @@ var vm = new Vue({
 			});
 		},
         queryOnce: function (event) {
-            var jobIds = getSelectedRows();
+            var jobIds = getSelectedRows(gridTaleIds);
             if (jobIds == null) {
                 return;
             }
@@ -271,8 +289,8 @@ var vm = new Vue({
 		reload: function (event) {
             $(":input").attr("disabled",null);
 			vm.showList = true;
-			var page = $("#jqGrid").jqGrid('getGridParam','page');
-			$("#jqGrid").jqGrid('setGridParam',{ 
+			var page = $("#jqGrid_table").jqGrid('getGridParam','page');
+			$("#jqGrid_table").jqGrid('setGridParam',{
                 postData:{'beanName': vm.q.beanName},
                 page:page 
             }).trigger("reloadGrid");
@@ -283,12 +301,19 @@ vm.$watch('schedule.mode',function (newValue,oldValue) {
     vm.switchMode(newValue);
 });
 vm.$watch('schedule.type',function (newValue,oldValue) {
-    vm.switchType(newValue);
+    debugger;
+    if(vm.flag=='add'){
+        vm.switchType(newValue);
+    }else{
+        vm.switchType(newValue,vm.schedule.mode);
+    }
 })
 
 
 $(function () {
-    $("#jqGrid").jqGrid({
+
+    gridTaleIds.push('jqGrid_table');
+    $("#jqGrid_table").jqGrid({
         url: baseURL + 'sys/schedule/list',
         datatype: "json",
         colModel: [
@@ -297,7 +322,7 @@ $(function () {
             { label: '任务类型', name: 'type', width: 100,formatter:function(cellValue){return cellValue==0?'本地任务':'远程任务';} },
             { label: '调度方式', name: 'mode', width: 100,formatter:function(cellValue){return cellValue==0?'类方法参数':cellValue==1?'rest api':'shell脚本';} },
             { label: '是否需异步查询结果', name: 'needQueryFlag', width: 100,formatter:function(cellValue){return cellValue==0?'不需要':'需要';} },
-            { label: '依赖于其他任务', name: 'blockJobIds', width: 100,formatter:function(cellValue){return cellValue==null?'无依赖':'有依赖';} },
+            //{ label: '依赖于其他任务', name: 'blockJobIds', width: 100,formatter:function(cellValue){return cellValue==null?'无依赖':'有依赖';} },
             { label: '状态', name: 'state', width: 100,formatter:function(cellValue){
                  var msg;
                   if(cellValue==1){
@@ -334,13 +359,18 @@ $(function () {
         rownumbers: true,
         rownumWidth: 25,
         autowidth:true,
+        subGrid : true,
+
         multiselect: true,
         pager: "#jqGridPager",
         jsonReader : {
             root: "page.list",
             page: "page.currPage",
             total: "page.totalPage",
-            records: "page.totalCount"
+            records: "page.totalCount",
+            subgrid: {
+                root: "page.list"
+            }
         },
         prmNames : {
             page:"page",
@@ -350,7 +380,74 @@ $(function () {
         gridComplete:function(){
             //隐藏grid底部滚动条
             $("#jqGrid").closest(".ui-jqgrid-bdiv").css({ "overflow-x" : "hidden" });
-        }
+        },
+        subGridRowExpanded: function(subgrid_id, row_id) {  // (2)子表格容器的id和需要展开子表格的行id，将传入此事件函数
+            var subgrid_table_id;
+            subgrid_table_id = "jqGrid_table"+subgrid_id ;   // (3)根据subgrid_id定义对应的子表格的table的id
+            gridTaleIds.push(subgrid_table_id);
+            var subgrid_pager_id;
+            subgrid_pager_id = "jqp"+subgrid_id   // (4)根据subgrid_id定义对应的子表格的pager的id
+
+            // (5)动态添加子报表的table和pager
+            $("#" + subgrid_id).html("<table id='"+subgrid_table_id+"' class='scroll'></table><div id='"+subgrid_pager_id+"' class='scroll'></div>");
+
+            // (6)创建jqGrid对象
+            $("#" + subgrid_table_id).jqGrid({
+                url: baseURL + 'sys/schedule/child/'+row_id,  // (7)子表格数据对应的url，注意传入的contact.id参数
+                datatype: "json",
+                colModel: [
+                    { label: '任务ID', name: 'jobId', width: 60, key: true },
+                    { label: '任务名称', name: 'jobName', width: 100 },
+                    { label: '任务类型', name: 'type', width: 100,formatter:function(cellValue){return cellValue==0?'本地任务':'远程任务';} },
+                    { label: '调度方式', name: 'mode', width: 100,formatter:function(cellValue){return cellValue==0?'类方法参数':cellValue==1?'rest api':'shell脚本';} },
+                    { label: '是否需异步查询结果', name: 'needQueryFlag', width: 100,formatter:function(cellValue){return cellValue==0?'不需要':'需要';} },
+                    { label: '所依赖的任务id', name: 'parent', width: 100 },
+                    { label: '状态', name: 'state', width: 100,formatter:function(cellValue){
+                            var msg;
+                            if(cellValue==1){
+                                msg="被阻塞";
+                            }else if(cellValue==2){
+                                msg="调度成功";
+                            }else if(cellValue==3){
+                                msg="调度失败";
+                            }else if(cellValue==4){
+                                msg="执行成功";
+                            }else if(cellValue==5){
+                                msg="执行失败";
+                            }else{
+                                msg="无状态";
+                            }
+                            return msg;
+                        }
+                    },
+                    { label: '备注 ', name: 'remark', width: 100 },
+                    { label: '开启状态', name: 'status', width: 60, formatter: function(value, options, row){
+                            return value === 0 ?
+                                '<span class="label label-success">正常</span>' :
+                                '<span class="label label-danger">暂停</span>';
+                        }}
+                ],
+                gridComplete:function(){
+                    //隐藏grid底部滚动条
+                    $("#" + subgrid_table_id).closest(".ui-jqgrid-bdiv").css({ "overflow-x" : "hidden" });
+                },
+                jsonReader : {
+                    root: "page.list",
+                    page: "page.currPage",
+                    total: "page.totalPage",
+                    records: "page.totalCount",
+                    subgrid: {
+                        root: "page.list"
+                    }
+                },
+                multiselect: true,
+                prmNames: {search: "search"},
+                pager: subgrid_pager_id,
+                viewrecords: true,
+                height: "100%",
+                rowNum: 5
+            });
+        },
     });
 
 });

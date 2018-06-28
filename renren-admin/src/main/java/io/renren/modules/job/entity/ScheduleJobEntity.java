@@ -46,7 +46,7 @@ public class ScheduleJobEntity implements Serializable {
 	/**
 	 * cron表达式
 	 */
-	@NotBlank(message="cron表达式不能为空")
+    @NotBlank(message="cronExpression不能为空")
 	private String cronExpression;
 
 	/**
@@ -81,10 +81,6 @@ public class ScheduleJobEntity implements Serializable {
 	 */
 	private String dispatchSuccessValue;
 
-	/**
-	 * 任务调度失败的返回值
-	 */
-	private String dispatchFailValue;
 
 
 
@@ -119,13 +115,27 @@ public class ScheduleJobEntity implements Serializable {
 	 */
 	private String querySuccessValue;
 	/**
-	 * 任务查询执行失败之后的返回值
-	 */
-	private String queryFailValue;
-	/**
 	 * 时隔多少秒后进行任务结果查询，单位秒
 	 */
-	private String intervalSeconds;
+	private Integer afterSeconds;
+	/**
+	 * 调度失败以后心跳时间，单位秒
+	 */
+	private Integer dispatchIntervalTimes;
+	/**
+	 * 调度失败心跳次数
+	 */
+	private Integer dispatchIntervalCounts;
+	/**
+	 * 执行失败心跳时间，单位秒
+	 */
+	private Integer excuteIntervalTimes;
+	/**
+	 * 执行失败心跳次数
+	 */
+	private Integer excuteIntervalCounts;
+
+
 
 
 	/**
@@ -143,6 +153,22 @@ public class ScheduleJobEntity implements Serializable {
 	 * 备注
 	 */
 	private String remark;
+	/**
+	 * 父节点id
+	 */
+	private Integer parent;
+	/**
+	 * 子节点id
+	 */
+	private String child;
+	/**
+	 * 一级节点id
+	 */
+	private Integer zparent;
+	/**
+	 * 是否是一级节点，以是否有依赖的任务id作为判定
+	 */
+	private Integer isZparent;
 
 
 
@@ -215,7 +241,39 @@ public class ScheduleJobEntity implements Serializable {
 	public Integer getStatus() {
 		return status;
 	}
-	
+
+	public Integer getParent() {
+		return parent;
+	}
+
+	public void setParent(Integer parent) {
+		this.parent = parent;
+	}
+
+	public String getChild() {
+		return child;
+	}
+
+	public void setChild(String child) {
+		this.child = child;
+	}
+
+	public Integer getZparent() {
+		return zparent;
+	}
+
+	public void setZparent(Integer zparent) {
+		this.zparent = zparent;
+	}
+
+	public Integer getIsZparent() {
+		return isZparent;
+	}
+
+	public void setIsZparent(Integer isZparent) {
+		this.isZparent = isZparent;
+	}
+
 	/**
 	 * 设置：cron表达式
 	 * @param cronExpression cron表达式
@@ -253,6 +311,46 @@ public class ScheduleJobEntity implements Serializable {
 
 	public void setType(Integer type) {
 		this.type = type;
+	}
+
+	public Integer getAfterSeconds() {
+		return afterSeconds;
+	}
+
+	public void setAfterSeconds(Integer afterSeconds) {
+		this.afterSeconds = afterSeconds;
+	}
+
+	public Integer getDispatchIntervalTimes() {
+		return dispatchIntervalTimes;
+	}
+
+	public void setDispatchIntervalTimes(Integer dispatchIntervalTimes) {
+		this.dispatchIntervalTimes = dispatchIntervalTimes;
+	}
+
+	public Integer getDispatchIntervalCounts() {
+		return dispatchIntervalCounts;
+	}
+
+	public void setDispatchIntervalCounts(Integer dispatchIntervalCounts) {
+		this.dispatchIntervalCounts = dispatchIntervalCounts;
+	}
+
+	public Integer getExcuteIntervalTimes() {
+		return excuteIntervalTimes;
+	}
+
+	public void setExcuteIntervalTimes(Integer excuteIntervalTimes) {
+		this.excuteIntervalTimes = excuteIntervalTimes;
+	}
+
+	public Integer getExcuteIntervalCounts() {
+		return excuteIntervalCounts;
+	}
+
+	public void setExcuteIntervalCounts(Integer excuteIntervalCounts) {
+		this.excuteIntervalCounts = excuteIntervalCounts;
 	}
 
 	public String getJobName() {
@@ -318,13 +416,6 @@ public class ScheduleJobEntity implements Serializable {
 		this.dispatchSuccessValue = dispatchSuccessValue;
 	}
 
-	public String getDispatchFailValue() {
-		return dispatchFailValue;
-	}
-
-	public void setDispatchFailValue(String dispatchFailValue) {
-		this.dispatchFailValue = dispatchFailValue;
-	}
 
 	public Integer getState() {
 		return state;
@@ -350,21 +441,7 @@ public class ScheduleJobEntity implements Serializable {
 		this.querySuccessValue = querySuccessValue;
 	}
 
-	public String getQueryFailValue() {
-		return queryFailValue;
-	}
 
-	public void setQueryFailValue(String queryFailValue) {
-		this.queryFailValue = queryFailValue;
-	}
-
-	public String getIntervalSeconds() {
-		return intervalSeconds;
-	}
-
-	public void setIntervalSeconds(String intervalSeconds) {
-		this.intervalSeconds = intervalSeconds;
-	}
 
 	public Integer getNeedQueryFlag() {
 		return needQueryFlag;

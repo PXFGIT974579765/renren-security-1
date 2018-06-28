@@ -46,8 +46,29 @@ window.confirm = function(msg, callback){
 }
 
 //选择一条记录
-function getSelectedRow() {
-    var grid = $("#jqGrid");
+function getSelectedRow(gridTaleIds) {
+	debugger;
+    var rowkey;
+    var selectedGrid;
+    for (var gridId in gridTaleIds ){
+        var grid = $("#"+gridTaleIds[gridId]);
+        rowkey=grid.getGridParam("selrow");
+        if(rowkey){
+            selectedGrid=grid;
+            break;
+        }
+    }
+    if(!rowkey){
+        alert("请选择一条记录");
+        return ;
+    }
+    var selectedIDs=selectedGrid.getGridParam("selarrrow");
+    if(selectedIDs.length > 1){
+        alert("只能选择一条记录");
+        return ;
+    }
+    return selectedIDs[0];
+    /*var grid = $("#jqGrid");
     var rowKey = grid.getGridParam("selrow");
     if(!rowKey){
     	alert("请选择一条记录");
@@ -60,19 +81,36 @@ function getSelectedRow() {
     	return ;
     }
     
-    return selectedIDs[0];
+    return selectedIDs[0];*/
 }
 
 //选择多条记录
-function getSelectedRows() {
-    var grid = $("#jqGrid");
-    var rowKey = grid.getGridParam("selrow");
+function getSelectedRows(gridTaleIds) {
+    //var grid = $("#jqGrid");
+    debugger;
+    var rowkey;
+    var selectedGrid;
+    for (var gridId in gridTaleIds  ){
+        var grid = $("#"+gridTaleIds[gridId]);
+        rowkey=grid.getGridParam("selrow");
+        if(rowkey){
+            selectedGrid=grid;
+            break;
+		}
+	}
+    if(!rowkey){
+        alert("请选择一条记录");
+        return ;
+    }
+    return selectedGrid.getGridParam("selarrrow")
+
+   /* var rowKey = grid.getGridParam("selrow");
     if(!rowKey){
     	alert("请选择一条记录");
     	return ;
     }
     
-    return grid.getGridParam("selarrrow");
+    return grid.getGridParam("selarrrow");*/
 }
 
 //判断是否为空
