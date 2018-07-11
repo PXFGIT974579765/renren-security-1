@@ -59,6 +59,15 @@ public class SysPageController {
 		model.addAttribute("area", area);
 		return "mainscreen";
 	}
+
+	@SysLog("调用系统汇总大屏页面")
+	@RequestMapping("screen")
+	public String screen(Model model,String name,String area,Integer days){
+        model.addAttribute("name", name);
+		model.addAttribute("area", area);
+        model.addAttribute("days", days);
+		return "screen";
+	}
 	
 	@RequestMapping("gongzuozhan")
 	public String gongzuozhan(){

@@ -1,0 +1,63 @@
+<! DOCTYPE html>
+<html>
+<head>
+
+    <title>农投智慧大屏</title>
+    <#include "/header.html">
+    <link rel="stylesheet" type="text/css" href="${request.contextPath}/statics/css/map.css">
+    <!-- Echarts3 -->
+    <script src="${request.contextPath}/statics/js/modules/echart/echarts.js"></script>
+    <!-- 全国344个市、区、州对应的数字编号 -->
+    <script type="text/javascript" src="${request.contextPath}/statics/js/citymap.js"></script>
+    <!--<script src="${request.contextPath}/statics/js/modules/echart/echarts-gl.js"></script>-->
+    <script src="${request.contextPath}/statics/libs/daterangepicker.js"></script>
+    <script src="${request.contextPath}/statics/libs/moment.js"></script>
+</head>
+<body>
+
+<div class="container-fluid">
+    <input type=hidden id="webname" name="webname" value="${name}"/>
+    <input type=hidden id="webarea" name="webarea" value="${area}"/>
+    <input type=hidden id="webdays" name="webdays" value="${days}"/>
+    <div class="row" style="height: 60%;">
+        <div class="col-md-4">
+
+            <div id="price-situation" style="height: 100%;"></div>
+        </div>
+        <div class="col-md-4">
+            <div id="map" style="width: 100%; height: 100%;"></div>
+        </div>
+        <div class="col-md-4">
+            <div id="high-situation" style="height: 50%;"></div>
+            <div id="low-situation" style="height: 50%;"></div>
+        </div>
+    </div>
+    <div class="row" style="height: 40%;">
+        <div class="container-fluid">
+            <!-- K线图 -->
+            <div class="col-md-2">
+                <select class="form-control" name="vename" id="vename"></select>
+                <!--<div class="form-group col-sm-2">-->
+                <!--<select class="form-control" name="vearea" id="vearea"-->
+                <!--&gt;</select>-->
+                <!--</div>-->
+
+                <input type="text" id="datepicker" class="form-control">
+                <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                <button class="btn btn-default" onclick="query()">查询</button>
+                <h3 id="ve-title"></h3>
+
+            </div>
+            <div class="col-md-10">
+                <div class="topcn" id="kline" style="height: 100%;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="${request.contextPath}/statics/js/screen/price.js"></script>
+<script src="${request.contextPath}/statics/js/screen/pricesituation.js"></script>
+<script type="text/javascript" src="${request.contextPath}/statics/js/screen/map.js"></script>
+</body>
+</html>
