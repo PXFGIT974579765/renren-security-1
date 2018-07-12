@@ -95,10 +95,10 @@
         for (var i = 1; i < rawData.length; i++) {
             ps_data[rawData[i].name] = rawData[i];
             categoryData.push(rawData[i].name);
-            threeAgoLPriceData.push(rawData[i].threeAgoLPrice);
-            threeAgoHPriceData.push(rawData[i].threeAgoHPrice);
-            predictLPriceData.push(rawData[i].predicLPrice);
-            predictHPriceData.push(rawData[i].predicHPrice);
+            threeAgoLPriceData.push(rawData[i].threeAgoLPrice.toFixed(2));
+            threeAgoHPriceData.push(rawData[i].threeAgoHPrice.toFixed(2));
+            predictLPriceData.push(rawData[i].predicLPrice.toFixed(2));
+            predictHPriceData.push(rawData[i].predicHPrice.toFixed(2));
         }
         categoryArr = categoryData;
         threeAgoWhiteBar = threeAgoLPriceData;
@@ -121,10 +121,10 @@
                 trigger: 'item',
                 formatter: function (param, ticket, html) {
                     var itemObj = ps_data[param.name];
-                    var threeAgoLPrice = itemObj.threeAgoLPrice;
-                    var threeAgoHPrice = itemObj.threeAgoHPrice;
-                    var predictHPrice = itemObj.predicHPrice;
-                    var predictLPrice = itemObj.predicLPrice;
+                    var threeAgoLPrice = itemObj.threeAgoLPrice.toFixed(2);
+                    var threeAgoHPrice = itemObj.threeAgoHPrice.toFixed(2);
+                    var predictHPrice = itemObj.predicHPrice.toFixed(2);
+                    var predictLPrice = itemObj.predicLPrice.toFixed(2);
                     var str = param.name + "<br>" + "前三天最低价平均值:"
                         + threeAgoLPrice + "<br>" + "前三天最高价平均值:"
                         + threeAgoHPrice + "<br>" + "预测最低价:"

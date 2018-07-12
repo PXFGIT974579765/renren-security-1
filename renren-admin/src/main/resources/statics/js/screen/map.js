@@ -139,19 +139,19 @@ map_chart.on('click', function (params) {
 
 //初始化绘制全国地图配置
 var map_option = {
-    backgroundColor: '#000',
+    backgroundColor: '#fff',
     title: {
         text: '蔬菜市场行情',
 
         left: 'center',
         textStyle: {
-            color: '#fff',
+            color: '#000',
             fontSize: 16,
             fontWeight: 'normal',
             fontFamily: "Microsoft YaHei"
         },
         subtextStyle: {
-            color: '#ccc',
+            color: '#000',
             fontSize: 13,
             fontWeight: 'normal',
             fontFamily: "Microsoft YaHei"
@@ -175,7 +175,7 @@ var map_option = {
         },
         iconStyle: {
             normal: {
-                color: '#fff'
+                color: '#000'
             }
         }
     },
@@ -194,12 +194,12 @@ function renderMap(map, d) {
             normal: {
                 show: true,
                 textStyle: {
-                    color: '#fff'
+                    color: '#000'
                 }
             },
             emphasis: {
                 textStyle: {
-                    color: '#fff'
+                    color: '#000'
                 }
             }
         },
@@ -229,7 +229,7 @@ function renderMap(map, d) {
                 shadowBlur: 10
             },
             emphasis: {
-                areaColor: '#389BB7',
+                areaColor: '#aabc55',
                 borderWidth: 0
             }
         },
