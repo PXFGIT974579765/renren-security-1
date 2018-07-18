@@ -226,7 +226,10 @@ public class ScheduleJobEntity implements Serializable {
 		this.remark = remark;
 	}
 
-	/**
+    public ScheduleJobEntity() {
+    }
+
+    /**
 	 * 设置：任务状态
 	 * @param status 任务状态
 	 */
